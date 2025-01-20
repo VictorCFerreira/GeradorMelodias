@@ -8,7 +8,7 @@ import java.util.Random;
 public class GeradorMelodias {
     private final Random random = new Random();
 
-    public String gerarMelodia(String instrumento, Escala escala, String compasso, int bpm) {
+    public String gerarMelodia(String instrumento, Escala escala, int bpm, int oitavaInicial, int variacaoOitavas) {
         String[] notasEscala = escala.getNotas();
         HashMap<String, Integer> repeticoesNotas = new HashMap<>();
         for (String nota : notasEscala) {
@@ -29,6 +29,10 @@ public class GeradorMelodias {
 
             String nota = notasDisponiveis.get(random.nextInt(notasDisponiveis.size()));
 
+            // Escolhe uma oitava aleatória dentro do intervalo permitido
+            int oitavaAleatoria = oitavaInicial + random.nextInt(variacaoOitavas + 1);
+            nota += oitavaAleatoria; // Adiciona a oitava à nota
+
             int[] duracoes = {1, 2, 4, 8, 16};
             int duracaoSorteada = duracoes[random.nextInt(duracoes.length)];
             String duracaoNota = obterDuracaoNota(duracaoSorteada);
@@ -36,9 +40,9 @@ public class GeradorMelodias {
             // Calcula o tempo que essa nota ocupará
             double tempoNota = segundosPorBatida * (4.0 / duracaoSorteada); // Multiplica por 4/duração (relativo à semibreve)
 
-            // Verifica se ainda cabe no tempo total
+            // Verifica se a nota cabe no tempo total permitido
             if (tempoTotalAcumulado + tempoNota > duracaoTotalSegundos) {
-                break; // Sai do loop se essa nota exceder o tempo total permitido
+                break;
             }
 
             construtorMelodia.append(nota).append(duracaoNota).append(" ");
@@ -48,6 +52,7 @@ public class GeradorMelodias {
 
         return construtorMelodia.toString().trim();
     }
+
 
     private String obterDuracaoNota(int valorNota) {
         switch (valorNota) {
