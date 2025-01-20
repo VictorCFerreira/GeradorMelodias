@@ -1,11 +1,10 @@
-package service;
+package GeradorMelodias.GeradorMelodias.service;
 
-import entity.Melodia;
-import entity.avaliacao.Avaliacao;
+import GeradorMelodias.GeradorMelodias.entity.avaliacao.Avaliacao;
+import GeradorMelodias.GeradorMelodias.repository.AvaliacaoRepository;
+import GeradorMelodias.GeradorMelodias.repository.MelodiaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import repository.AvaliacaoRepository;
-import repository.MelodiaRepository;
 
 import java.util.Optional;
 

@@ -1,4 +1,4 @@
-package entity;
+package GeradorMelodias.GeradorMelodias.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -11,10 +11,11 @@ import lombok.Setter;
 @Setter
 public class Parametros {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     private String instrumento;
     private String escala;
-    private Integer categoria;
+    private Integer oitavas;
     private Integer bpm;
 }

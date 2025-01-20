@@ -1,25 +1,24 @@
-package controller;
-
-import entity.Melodia;
+package GeradorMelodias.GeradorMelodias.controller;
+import GeradorMelodias.GeradorMelodias.entity.Parametros;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import service.MelodiaService;
+import GeradorMelodias.GeradorMelodias.service.ParametrosService;
 
 @RestController
-@RequestMapping("/melodia")
-public class MelodiaController {
+@RequestMapping("/parametros")
+public class ParametrosController {
 
     @Autowired
-    private MelodiaService melodiaService;
+    private ParametrosService parametrosService;
 
 
     @PostMapping
-    public ResponseEntity<?> receiveHeartBeat(@RequestBody Melodia data) throws Exception {
-        melodiaService.saveMelodia(data);
+    public ResponseEntity<?> saveParametros(@RequestBody Parametros data) throws Exception {
+        parametrosService.saveParametros(data);
 
         return ResponseEntity.ok().build();
     }

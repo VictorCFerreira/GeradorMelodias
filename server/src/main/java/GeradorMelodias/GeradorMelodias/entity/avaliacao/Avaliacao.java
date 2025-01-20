@@ -1,6 +1,6 @@
-package entity.avaliacao;
+package GeradorMelodias.GeradorMelodias.entity.avaliacao;
 
-import entity.Melodia;
+import GeradorMelodias.GeradorMelodias.entity.Melodia;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

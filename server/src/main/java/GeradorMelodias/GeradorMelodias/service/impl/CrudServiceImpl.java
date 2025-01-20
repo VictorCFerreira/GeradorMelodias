@@ -1,11 +1,11 @@
-package service.impl;
+package GeradorMelodias.GeradorMelodias.service.impl;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
-import service.CrudService;
+import GeradorMelodias.GeradorMelodias.service.CrudService;
 
 import java.io.Serializable;
 import java.util.List;

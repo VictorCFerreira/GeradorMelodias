@@ -1,6 +1,6 @@
-package repository;
+package GeradorMelodias.GeradorMelodias.repository;
 
-import entity.Melodia;
+import GeradorMelodias.GeradorMelodias.entity.Melodia;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

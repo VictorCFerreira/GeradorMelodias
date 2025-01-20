@@ -1,4 +1,4 @@
-package entity;
+package GeradorMelodias.GeradorMelodias.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
