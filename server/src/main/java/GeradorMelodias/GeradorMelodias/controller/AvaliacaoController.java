@@ -1,5 +1,6 @@
 package GeradorMelodias.GeradorMelodias.controller;
 
+import GeradorMelodias.GeradorMelodias.dto.generic.AvaliacaoDTO;
 import GeradorMelodias.GeradorMelodias.entity.avaliacao.Avaliacao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class AvaliacaoController {
 
 
     @PostMapping
-    public ResponseEntity<?> receiveAvaliacao(@RequestBody Avaliacao data) throws Exception {
+    public ResponseEntity<?> receiveAvaliacao(@RequestBody AvaliacaoDTO data) throws Exception {
         avaliacaoService.saveAvaliacao(data);
 
         return ResponseEntity.ok().build();

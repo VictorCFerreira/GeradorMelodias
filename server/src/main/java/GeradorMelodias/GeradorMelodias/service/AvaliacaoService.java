@@ -1,5 +1,8 @@
 package GeradorMelodias.GeradorMelodias.service;
 
+import GeradorMelodias.GeradorMelodias.dto.generic.AvaliacaoDTO;
+import GeradorMelodias.GeradorMelodias.dto.request.CreateAvaliacaoDTO;
+import GeradorMelodias.GeradorMelodias.entity.Melodia;
 import GeradorMelodias.GeradorMelodias.entity.avaliacao.Avaliacao;
 import GeradorMelodias.GeradorMelodias.repository.AvaliacaoRepository;
 import GeradorMelodias.GeradorMelodias.repository.MelodiaRepository;
@@ -12,13 +15,27 @@ import java.util.Optional;
 public class AvaliacaoService {
 
     @Autowired
-    private MelodiaRepository melodiaRepository;
+    private MelodiaService melodiaService;
 
     @Autowired
     private AvaliacaoRepository avaliacaoRepository;
 
-    public Avaliacao saveAvaliacao(Avaliacao avaliacao){
-        return avaliacaoRepository.save(avaliacao);};
+    public Avaliacao saveAvaliacao(CreateAvaliacaoDTO data) {
+        Avaliacao avaliacao = new Avaliacao();
+        avaliacao.setNota(data.nota());
+        avaliacao.setSensacao(data.sensacao());
 
-    public Optional<Avaliacao> findById(Long id){return avaliacaoRepository.findById(id);};
+        Optional<Melodia> melodia = melodiaService.findById(data.melodiaId());
+        melodia.ifPresent(avaliacao::setMelodia);
+
+        return avaliacaoRepository.save(avaliacao);
+    }
+
+    ;
+
+    public Optional<Avaliacao> findById(Long id) {
+        return avaliacaoRepository.findById(id);
+    }
+
+    ;
 }
