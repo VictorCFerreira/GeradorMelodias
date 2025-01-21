@@ -14,7 +14,7 @@ public class Melodia {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private String notas;
+    private String melodia;
     private String intervalos;
 
     @OneToOne

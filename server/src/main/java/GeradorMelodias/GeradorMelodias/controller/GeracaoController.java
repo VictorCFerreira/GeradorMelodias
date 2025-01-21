@@ -1,7 +1,7 @@
 package GeradorMelodias.GeradorMelodias.controller;
 
+import GeradorMelodias.GeradorMelodias.dto.generic.ParametrosDTO;
 import GeradorMelodias.GeradorMelodias.dto.request.CreateMelodiaDTO;
-import GeradorMelodias.GeradorMelodias.entity.Melodia;
 import GeradorMelodias.GeradorMelodias.service.MelodiaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,16 +11,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/melodia")
-public class MelodiaController {
+@RequestMapping("/geracao")
+public class GeracaoController {
 
     @Autowired
     private MelodiaService melodiaService;
 
-
     @PostMapping
-    public ResponseEntity<?> receiveMelodia(@RequestBody CreateMelodiaDTO data) throws Exception {
-        melodiaService.saveMelodia(data);
+    public ResponseEntity<?> generateMelodia(@RequestBody ParametrosDTO data) throws Exception {
+        melodiaService.gerarMelodia(data);
 
         return ResponseEntity.ok().build();
     }

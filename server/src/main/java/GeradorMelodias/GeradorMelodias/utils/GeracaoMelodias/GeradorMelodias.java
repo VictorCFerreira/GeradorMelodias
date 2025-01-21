@@ -17,9 +17,9 @@ public class GeradorMelodias {
         int repeticoesMaximas = 4;
         int duracaoTotalSegundos = 15;
 
-        double segundosPorBatida = 60.0 / bpm; // Tempo por batida em segundos
+        double segundosPorBatida = 60.0 / bpm; // Tempo por batida
         StringBuilder construtorMelodia = new StringBuilder("I[" + instrumento + "] ");
-        double tempoTotalAcumulado = 0.0; // Tempo total acumulado da melodia
+        double tempoTotalAcumulado = 0.0; // Tempo total da melodia
 
         while (tempoTotalAcumulado < duracaoTotalSegundos) {
             List<String> notasDisponiveis = obterNotasDisponiveis(notasEscala, repeticoesNotas, repeticoesMaximas);
@@ -29,25 +29,25 @@ public class GeradorMelodias {
 
             String nota = notasDisponiveis.get(random.nextInt(notasDisponiveis.size()));
 
-            // Escolhe uma oitava aleatória dentro do intervalo permitido
+            //Randomiza oitava da nota
             int oitavaAleatoria = oitavaInicial + random.nextInt(variacaoOitavas + 1);
-            nota += oitavaAleatoria; // Adiciona a oitava à nota
+            nota += oitavaAleatoria;
 
             int[] duracoes = {1, 2, 4, 8, 16};
             int duracaoSorteada = duracoes[random.nextInt(duracoes.length)];
             String duracaoNota = obterDuracaoNota(duracaoSorteada);
 
-            // Calcula o tempo que essa nota ocupará
+            //Cálculo tempo da nota
             double tempoNota = segundosPorBatida * (4.0 / duracaoSorteada); // Multiplica por 4/duração (relativo à semibreve)
 
-            // Verifica se a nota cabe no tempo total permitido
+            //Verifica se a nota "cabe" no tempo
             if (tempoTotalAcumulado + tempoNota > duracaoTotalSegundos) {
                 break;
             }
 
             construtorMelodia.append(nota).append(duracaoNota).append(" ");
             repeticoesNotas.put(nota, repeticoesNotas.get(nota) + 1);
-            tempoTotalAcumulado += tempoNota; // Atualiza o tempo total acumulado
+            tempoTotalAcumulado += tempoNota; //Adiciona ao tempo total
         }
 
         return construtorMelodia.toString().trim();
@@ -55,14 +55,14 @@ public class GeradorMelodias {
 
 
     private String obterDuracaoNota(int valorNota) {
-        switch (valorNota) {
-            case 1: return "w"; // Semibreve
-            case 2: return "h"; // Mínima
-            case 4: return "q"; // Semínima
-            case 8: return "i"; // Colcheia
-            case 16: return "s"; // Semicolcheia
-            default: throw new IllegalArgumentException("Valor de nota inválido: " + valorNota);
-        }
+        return switch (valorNota) {
+            case 1 -> "w"; // Semibreve
+            case 2 -> "h"; // Mínima
+            case 4 -> "q"; // Semínima
+            case 8 -> "i"; // Colcheia
+            case 16 -> "s"; // Semicolcheia
+            default -> throw new IllegalArgumentException("Valor de nota inválido: " + valorNota);
+        };
     }
 
     private List<String> obterNotasDisponiveis(String[] escala, HashMap<String, Integer> repeticoesNotas, int repeticoesMaximas) {

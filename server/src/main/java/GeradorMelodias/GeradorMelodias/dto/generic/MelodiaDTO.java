@@ -4,7 +4,7 @@ import GeradorMelodias.GeradorMelodias.entity.Parametros;
 
 public record MelodiaDTO(
         Long id,
-        String notas,
+        String melodia,
         String intervalos,
         Parametros parametros
 ) {
