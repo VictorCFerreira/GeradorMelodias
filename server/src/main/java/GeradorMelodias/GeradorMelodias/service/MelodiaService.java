@@ -22,11 +22,10 @@ public class MelodiaService {
     @Autowired
     private ParametrosService parametrosService;
 
-    @Autowired
-    private GeradorMelodias geradorMelodias;
 
-    @Autowired
-    private IntervalosUtils intervalosUtils;
+    private final GeradorMelodias geradorMelodias = new GeradorMelodias();
+
+    private final IntervalosUtils intervalosUtils = new IntervalosUtils();
 
     public Melodia gerarMelodia(ParametrosDTO data) throws Exception {
         // Localizar os parâmetros (se fornecidos)

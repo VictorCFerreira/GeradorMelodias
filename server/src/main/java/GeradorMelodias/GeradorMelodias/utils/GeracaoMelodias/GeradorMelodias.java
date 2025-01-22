@@ -11,9 +11,11 @@ public class GeradorMelodias {
     public String gerarMelodia(String instrumento, Escala escala, int bpm, int oitavaInicial, int variacaoOitavas) {
         String[] notasEscala = escala.getNotas();
         HashMap<String, Integer> repeticoesNotas = new HashMap<>();
+        System.out.println("hash map: " + repeticoesNotas);
         for (String nota : notasEscala) {
             repeticoesNotas.put(nota, 0);
         }
+        System.out.println("hash map--: " + repeticoesNotas);
         int repeticoesMaximas = 4;
         int duracaoTotalSegundos = 15;
 
@@ -45,8 +47,9 @@ public class GeradorMelodias {
                 break;
             }
 
+            System.out.println("nota: " + nota.replaceAll(String.valueOf(oitavaAleatoria),""));
             construtorMelodia.append(nota).append(duracaoNota).append(" ");
-            repeticoesNotas.put(nota, repeticoesNotas.get(nota) + 1);
+            repeticoesNotas.put(nota, repeticoesNotas.get(nota.replaceAll(String.valueOf(oitavaAleatoria),"")));
             tempoTotalAcumulado += tempoNota; //Adiciona ao tempo total
         }
 

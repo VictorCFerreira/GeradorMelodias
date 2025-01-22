@@ -4,13 +4,20 @@ import GeradorMelodias.GeradorMelodias.utils.GeracaoMelodias.Escala;
 
 public class IntervalosUtils {
     public String calcularIntervalos(String melodiaGerada, Escala escala) {
+        System.out.println("melodia gerada calculo intervalos: " + melodiaGerada);
         String[] notas = escala.getNotas();
         String[] melodiaNotas = melodiaGerada.split(" ");
         int[][] contagemIntervalos = new int[notas.length][notas.length];
 
-        for (int i = 0; i < melodiaNotas.length - 1; i++) {
-            int origem = getIndiceNota(notas, melodiaNotas[i]);
-            int destino = getIndiceNota(notas, melodiaNotas[i + 1]);
+        for(String s : melodiaNotas){
+            System.out.println("parte melodia: " + s);
+        }
+
+        //Começando de 1 pois o primeiro index refere-se ao instrumento
+        for (int i = 1; i < melodiaNotas.length - 1; i++) {
+            //Substring (0, length-1) para remover o indicador de tempo da nota
+            int origem = getIndiceNota(notas, melodiaNotas[i].substring(0,melodiaNotas[i].length() - 2));
+            int destino = getIndiceNota(notas, melodiaNotas[i + 1].substring(0, melodiaNotas[i + 1].length() - 2));
 
             if (origem != -1 && destino != -1) {
                 contagemIntervalos[origem][destino]++;
