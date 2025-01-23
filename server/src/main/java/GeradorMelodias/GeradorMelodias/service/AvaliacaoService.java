@@ -9,6 +9,7 @@ import GeradorMelodias.GeradorMelodias.repository.MelodiaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -35,6 +36,10 @@ public class AvaliacaoService {
 
     public Optional<Avaliacao> findById(Long id) {
         return avaliacaoRepository.findById(id);
+    }
+
+    public List<Avaliacao> findAll(){
+        return avaliacaoRepository.findAll();
     }
 
     ;
