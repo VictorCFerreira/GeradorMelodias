@@ -1,10 +1,14 @@
 import { BaseRoutes } from './routes/baseroutes';
+import { PrimeReactProvider, PrimeReactContext } from 'primereact/api';
+
 import './App.css'
 
 function App() {
   return (
     <>
-      <BaseRoutes />
+      <PrimeReactProvider>
+        <BaseRoutes />
+      </PrimeReactProvider>
     </>
   );
 

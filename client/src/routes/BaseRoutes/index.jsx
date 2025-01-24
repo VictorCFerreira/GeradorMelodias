@@ -8,7 +8,6 @@ export function BaseRoutes() {
   return (
     <>
       <Routes>
-        {/* Public Routes */}
 
         <Route path="/" element={<HomePage />} />
         <Route path="/geracao" element={<GeracaoPage />} />

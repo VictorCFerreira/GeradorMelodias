@@ -1,80 +1,95 @@
 import React, { useState } from "react";
-import axios from "axios";
-import { API_URL } from "../constants/constants";
+import { Dropdown } from "primereact/dropdown";
+import { ESCALAS } from "../constants/constants"
+import { INSTRUMENTOS } from "../constants/constants"
+import { InputNumber } from "primereact/inputnumber";
+import { Button } from "primereact/button";
 
-export function FormParametros() {
+export function FormParametros({onSubmit}) {
     const [instrumento, setInstrumento] = useState("");
     const [escala, setEscala] = useState("");
     const [oitavas, setOitavas] = useState("");
     const [bpm, setBpm] = useState("");
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-
+    
         const parametros = {
-            instrumento,
-            escala,
-            oitavas: parseInt(oitavas),
-            bpm: parseInt(bpm),
+          instrumento,
+          escala,
+          oitavas: parseInt(oitavas),
+          bpm: parseInt(bpm),
         };
-
-        try {
-            const response = await axios.post(`${API_URL}/geracao`, JSON.stringify(parametros), {
-                headers: { "Content-Type": "application/json" },
-            });
-            console.log("Melodia gerada com sucesso:", response.data);
-            alert("Melodia gerada com sucesso!");
-        } catch (error) {
-            console.error("Erro ao gerar melodia:", error);
-            alert("Erro ao gerar melodia. Verifique os parâmetros.");
-        }
-    };
+    
+        onSubmit(parametros); 
+      };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <div>
-                <label>Instrumento:</label>
-                <input
-                    type="text"
+        <form onSubmit={handleSubmit} className="p-fluid">
+            <div className="p-field m-4">
+                <label htmlFor="instrumento">Instrumento</label>
+                <Dropdown
+                    id="instrumento"
                     value={instrumento}
-                    onChange={(e) => setInstrumento(e.target.value)}
-                    placeholder="Ex: Piano"
-                    required
+                    options={INSTRUMENTOS}
+                    onChange={(e) => setInstrumento(e.value)}
+                    placeholder="Selecione um instrumento"
+                    className="p-dropdown"
                 />
             </div>
-            <div>
-                <label>Escala:</label>
-                <input
-                    type="text"
+
+            <div className="p-field m-4">
+                <label htmlFor="escala">Escala</label>
+                <Dropdown
+                    id="escala"
                     value={escala}
-                    onChange={(e) => setEscala(e.target.value)}
-                    placeholder="Ex: Dó maior"
-                    required
+                    options={ESCALAS}
+                    onChange={(e) => setEscala(e.value)}
+                    placeholder="Selecione uma escala"
+                    className="p-dropdown"
                 />
             </div>
-            <div>
-                <label>Oitavas:</label>
-                <input
-                    type="number"
-                    value={oitavas}
-                    onChange={(e) => setOitavas(e.target.value)}
-                    min="1"
-                    max="8"
-                    required
+            <div className="flex m-4">
+                <div className="p-col-6 p-field mr-2">
+                    <label htmlFor="oitavas">Oitavas</label>
+                    <InputNumber
+                        id="oitavas"
+                        value={oitavas}
+                        onValueChange={(e) => setOitavas(e.value)}
+                        min={1}
+                        max={8}
+                        showButtons
+                        incrementButtonIcon="pi pi-chevron-up "
+                        decrementButtonIcon="pi pi-chevron-down"
+                        placeholder="Oitavas"
+                        className="p-inputnumber"
+                        required
+                    />
+                </div>
+                <div className="p-col-6 p-field">
+                    <label htmlFor="bpm">BPM</label>
+                    <InputNumber
+                        id="bpm"
+                        value={bpm}
+                        onValueChange={(e) => setBpm(e.value)}
+                        min={40}
+                        max={300}
+                        showButtons
+                        incrementButtonIcon="pi pi-chevron-up "
+                        decrementButtonIcon="pi pi-chevron-down"
+                        placeholder="BPM"
+                        className="p-inputnumber "
+                        required
+                    />
+                </div>
+            </div>
+            <div className="pt-4 m-4">
+                <Button
+                    type="submit"
+                    label="Gerar Melodia"
+                    className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200"
                 />
             </div>
-            <div>
-                <label>BPM:</label>
-                <input
-                    type="number"
-                    value={bpm}
-                    onChange={(e) => setBpm(e.target.value)}
-                    min="40"
-                    max="300"
-                    required
-                />
-            </div>
-            <button type="submit">Gerar Melodia</button>
         </form>
     );
-}
+};
