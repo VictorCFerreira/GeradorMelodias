@@ -1,6 +1,6 @@
 package GeradorMelodias.GeradorMelodias.dto.response;
 
-public record ResponseGeracaoDTO(
+public record ResponseMelodiaMidiDTO(
         Long idMelodia,
         byte[] midiBytes
 ) {

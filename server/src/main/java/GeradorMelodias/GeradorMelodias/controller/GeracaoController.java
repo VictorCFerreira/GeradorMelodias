@@ -2,24 +2,18 @@ package GeradorMelodias.GeradorMelodias.controller;
 
 import GeradorMelodias.GeradorMelodias.dto.generic.ParametrosDTO;
 import GeradorMelodias.GeradorMelodias.dto.request.MelodiaCruDTO;
-import GeradorMelodias.GeradorMelodias.dto.response.ResponseGeracaoDTO;
+import GeradorMelodias.GeradorMelodias.dto.response.ResponseMelodiaMidiDTO;
 import GeradorMelodias.GeradorMelodias.entity.Melodia;
-import GeradorMelodias.GeradorMelodias.entity.avaliacao.Avaliacao;
 import GeradorMelodias.GeradorMelodias.service.MelodiaService;
-import org.apache.coyote.Response;
 import org.jfugue.midi.MidiFileManager;
 import org.jfugue.pattern.Pattern;
-import org.jfugue.pattern.PatternProducer;
 import org.jfugue.player.Player;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.nio.file.Files;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -30,7 +24,7 @@ public class GeracaoController {
     private MelodiaService melodiaService;
 
     @PostMapping
-    public ResponseEntity<ResponseGeracaoDTO> generateMelodia(@RequestBody ParametrosDTO data) throws Exception {
+    public ResponseEntity<ResponseMelodiaMidiDTO> generateMelodia(@RequestBody ParametrosDTO data) throws Exception {
         Melodia melodia = melodiaService.gerarMelodia(data);
 
         File midiFile = new File("melodia"+melodia.getId()+".mid");
@@ -39,7 +33,7 @@ public class GeracaoController {
 
         byte[] midiBytes = Files.readAllBytes(midiFile.toPath());
 
-        ResponseGeracaoDTO response = new ResponseGeracaoDTO(
+        ResponseMelodiaMidiDTO response = new ResponseMelodiaMidiDTO(
             melodia.getId(),
             midiBytes
         );
@@ -65,19 +59,21 @@ public class GeracaoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<byte[]> getMidiMelodia(@PathVariable long id) throws Exception {
+    public ResponseEntity<ResponseMelodiaMidiDTO> getMidiMelodia(@PathVariable long id) throws Exception {
         Optional<Melodia> melodia = melodiaService.findById(id);
 
 
-        File midiFile = new File("melodia" + melodia.get().getId() + ".mid");
-            System.out.println(midiFile.toPath());
-            MidiFileManager.savePatternToMidi(new Pattern(melodia.get().getMelodia()), midiFile);
+        File midiFile = File.createTempFile("melodiaTemp" + id ,".mid");
+        System.out.println(midiFile.toPath());
+        MidiFileManager.savePatternToMidi(new Pattern(melodia.get().getMelodia()), midiFile);
 
-            byte[] midiBytes = Files.readAllBytes(midiFile.toPath());
-        return ResponseEntity.ok()
-                .header("Content-Disposition", "attachment; filename=melodia" + id + ".mid")
-                .header("Content-Type", "audio/midi")
-                .body(midiBytes);
+        byte[] midiBytes = Files.readAllBytes(midiFile.toPath());
+
+        ResponseMelodiaMidiDTO response = new ResponseMelodiaMidiDTO(
+                melodia.get().getId(),
+                midiBytes
+        );
+        return ResponseEntity.ok().body(response);
     }
 
 

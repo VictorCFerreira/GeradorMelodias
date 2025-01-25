@@ -25,7 +25,7 @@ export function FormParametros({ onSubmit }) {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="p-fluid bg-solid">
+        <form onSubmit={handleSubmit} className="p-fluid border border-white">
             <div className="p-field m-4">
                 <label htmlFor="instrumento">Instrumento</label>
                 <Dropdown
@@ -83,11 +83,11 @@ export function FormParametros({ onSubmit }) {
                     />
                 </div>
             </div>
-            <div className="pt-4 m-4">
+            <div className="pt-4 m-4 ">
                 <Button
                     type="submit"
                     label="Gerar Melodia"
-                    className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200"
+                    className="w-full px-4 mb-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200"
                 />
             </div>
         </form>

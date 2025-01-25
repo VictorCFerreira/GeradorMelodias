@@ -21,9 +21,16 @@ public class AvaliacaoController {
     private AvaliacaoService avaliacaoService;
 
 
+
     @PostMapping
     public ResponseEntity<?> receiveAvaliacao(@RequestBody CreateAvaliacaoDTO data) throws Exception {
         avaliacaoService.saveAvaliacao(data);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("test")
+    public ResponseEntity<?> aa() throws Exception{
 
         return ResponseEntity.ok().build();
     }

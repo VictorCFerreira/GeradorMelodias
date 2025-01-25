@@ -1,11 +1,15 @@
 package GeradorMelodias.GeradorMelodias.dto.generic;
 
-import GeradorMelodias.GeradorMelodias.entity.Parametros;
+import java.sql.Date;
 
 public record MelodiaDTO(
         Long id,
         String melodia,
         String intervalos,
-        Parametros parametros
+        String instrumento,
+        String escala,
+        Integer oitavas,
+        Integer bpm,
+        Date dataGeracao
 ) {
 }

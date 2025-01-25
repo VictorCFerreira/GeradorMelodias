@@ -41,9 +41,6 @@ export function FormAvaliacao({ onSubmit, melodiaId }) {
               />
             </button>
           ))}
-          <span className="ml-4 text-lg font-semibold">
-            Nota: {nota} / 10
-          </span>
         </div>
       </div>
 

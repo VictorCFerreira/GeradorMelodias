@@ -1,5 +1,4 @@
 import { FormAvaliacao } from "../../components/FormAvaliacao";
-import { Navbar } from "../../components/NavBar";
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from "react";
 import { InputText } from "primereact/inputtext";
@@ -18,10 +17,11 @@ export function AvaliacaoPage() {
   useEffect(() => {
     const fetchMidi = async () => {
       try {
-        const response = await axios.get(`/api/melodias/${melodiaId}`, {
-          responseType: "arraybuffer",
+        const response = await axios.get(`${API_URL}/geracao/${melodiaId}`, {
+          responseType: 'json',
         });
-        setMidiBytes(response.data);
+        
+        setMidiBytes(response.data.midiBytes);
       } catch (err) {
         console.error("Erro ao carregar o MIDI:", err);
         setError("Erro ao carregar o MIDI.");
@@ -30,6 +30,7 @@ export function AvaliacaoPage() {
 
     fetchMidi();
   }, [melodiaId]);
+
 
   const handleEnviarAvaliacao = async (avaliacao) => {
     try {
@@ -72,11 +73,12 @@ export function AvaliacaoPage() {
   return (
     <>
 
-      <div className="border-solid border-blue-200">
+      <div className="border-solid border-blue bg-blue-300 ">
+      <h1>Avaliar Melodia</h1>
+
         <div>
           <div className="player-container mt-6">
-            <h2>Player de Melodia</h2>
-            <MidiPlayer midiBytes={midiBytes} />
+            <MidiPlayer midiBase64={midiBytes}/>
           </div>
         </div>
         <div className="flex justify-content-center my-4">

@@ -43,9 +43,9 @@ export function GeracaoPage() {
   };
 
   return (
-    <div className="geracao-page">
-      <h1>Geração de Melodia</h1>
-      <div className="form-container">
+    <div className="border-solid border-blue bg-blue-300 ">
+      <h1 className="">Geração de Melodia</h1>
+      <div className="form-container bg-blue-300 bg-solid">
         <FormParametros onSubmit={handleGenerateMelody} />
       </div>
 
