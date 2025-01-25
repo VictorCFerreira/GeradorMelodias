@@ -5,7 +5,7 @@ import { INSTRUMENTOS } from "../constants/constants"
 import { InputNumber } from "primereact/inputnumber";
 import { Button } from "primereact/button";
 
-export function FormParametros({onSubmit}) {
+export function FormParametros({ onSubmit }) {
     const [instrumento, setInstrumento] = useState("");
     const [escala, setEscala] = useState("");
     const [oitavas, setOitavas] = useState("");
@@ -13,16 +13,16 @@ export function FormParametros({onSubmit}) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-    
+
         const parametros = {
-          instrumento,
-          escala,
-          oitavas: parseInt(oitavas),
-          bpm: parseInt(bpm),
+            instrumento,
+            escala,
+            oitavas: parseInt(oitavas),
+            bpm: parseInt(bpm),
         };
-    
-        onSubmit(parametros); 
-      };
+
+        onSubmit(parametros);
+    };
 
     return (
         <form onSubmit={handleSubmit} className="p-fluid">

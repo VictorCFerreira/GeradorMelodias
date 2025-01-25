@@ -2,9 +2,11 @@ package GeradorMelodias.GeradorMelodias.controller;
 
 import GeradorMelodias.GeradorMelodias.dto.generic.ParametrosDTO;
 import GeradorMelodias.GeradorMelodias.dto.request.MelodiaCruDTO;
+import GeradorMelodias.GeradorMelodias.dto.response.ResponseGeracaoDTO;
 import GeradorMelodias.GeradorMelodias.entity.Melodia;
 import GeradorMelodias.GeradorMelodias.entity.avaliacao.Avaliacao;
 import GeradorMelodias.GeradorMelodias.service.MelodiaService;
+import org.apache.coyote.Response;
 import org.jfugue.midi.MidiFileManager;
 import org.jfugue.pattern.Pattern;
 import org.jfugue.pattern.PatternProducer;
@@ -28,7 +30,7 @@ public class GeracaoController {
     private MelodiaService melodiaService;
 
     @PostMapping
-    public ResponseEntity<byte[]> generateMelodia(@RequestBody ParametrosDTO data) throws Exception {
+    public ResponseEntity<ResponseGeracaoDTO> generateMelodia(@RequestBody ParametrosDTO data) throws Exception {
         Melodia melodia = melodiaService.gerarMelodia(data);
 
         File midiFile = new File("melodia"+melodia.getId()+".mid");
@@ -37,12 +39,12 @@ public class GeracaoController {
 
         byte[] midiBytes = Files.readAllBytes(midiFile.toPath());
 
-        boolean bo = midiFile.delete();
-        System.out.println("deleted: " + bo);
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=melodia.mid")
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .body(midiBytes);
+        ResponseGeracaoDTO response = new ResponseGeracaoDTO(
+            melodia.getId(),
+            midiBytes
+        );
+
+        return ResponseEntity.ok().body(response);
     }
 
     @GetMapping("/{id}")

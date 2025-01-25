@@ -42,5 +42,15 @@ export const ESCALAS = [
     { label: "Bateria", value: "Standard Kit" },
     { label: "Sintetizador", value: "Synth Pad 1" },
   ];
+
+  export const SENSACOES = [
+      {label:"Alegre", value: "ALEGRE"},
+      {label:"Triste", value: "TRISTE"},
+      {label:"Inspirado", value: "INSPIRADO"},
+      {label:"Nostálgico", value: "NOSTALGICO"},
+      {label:"Relaxado", value: "RELAXADO"},
+      {label:"Energizado", value: "ENERGIZADO"}
+  ]
+
   
   

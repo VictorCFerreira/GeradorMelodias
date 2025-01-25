@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import MIDI from "midi.js";
 
 const MidiPlayer = ({ midiBytes }) => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -10,23 +9,14 @@ const MidiPlayer = ({ midiBytes }) => {
   };
 
   const handlePlayPause = () => {
-    console.log("midiBytes:", midiBytes);
-    console.log("Base64 MIDI:", base64Midi);
-    
-    // Verificar se o MIDI.js está carregado
-    console.log("MIDI.Player:", MIDI.Player);
-    
-
+    const MIDI = window.MIDI;
     if (!isPlaying) {
-      // Certifique-se de que o arquivo MIDI seja convertido corretamente
       const base64Midi = `data:audio/midi;base64,${convertToBase64(midiBytes)}`;
-
-      MIDI.Player.stop(); // Garante que nenhum player antigo esteja rodando
+      MIDI.Player.stop();
       MIDI.Player.loadFile(base64Midi, () => {
         MIDI.Player.start();
         setIsPlaying(true);
 
-        // Atualiza o progresso
         MIDI.Player.setAnimation((data) => {
           setProgress(data.now / data.end);
         });
@@ -42,8 +32,9 @@ const MidiPlayer = ({ midiBytes }) => {
     }
   };
 
+
   return (
-    <div className="midi-player flex flex-col items-center p-4 border rounded shadow">
+    <div className="midi-player flex flex-column items-center p-4 border rounded shadow">
       <div className="progress-bar w-full bg-gray-200 h-2 rounded mb-4">
         <div
           className="bg-blue-500 h-full rounded"

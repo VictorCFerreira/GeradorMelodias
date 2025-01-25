@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
       <ul className="flex space-x-4 flex justify-content-between border-solid">
         <li>
           <Link
-            to="/geracao"
+            to="/"
             className="hover:underline hover:text-blue-400 "
           >
             Geração
