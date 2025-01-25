@@ -47,7 +47,7 @@ public class GeracaoController {
         return ResponseEntity.ok().body(response);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/play/{id}")
     public ResponseEntity<?> playMelodiaGerada(@PathVariable  long id) throws Exception {
         Optional<Melodia> melodia = melodiaService.findById(id);
         Player player = new Player();
@@ -58,9 +58,27 @@ public class GeracaoController {
     }
 
     @GetMapping
-    public ResponseEntity<String> playMelodia(@RequestBody MelodiaCruDTO melodia) throws Exception {
+    public ResponseEntity<String> playMelodiaBackend(@RequestBody MelodiaCruDTO melodia) throws Exception {
         Player player = new Player();
         player.play(melodia.melodia());
         return ResponseEntity.ok("tocando!");
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<byte[]> getMidiMelodia(@PathVariable long id) throws Exception {
+        Optional<Melodia> melodia = melodiaService.findById(id);
+
+
+        File midiFile = new File("melodia" + melodia.get().getId() + ".mid");
+            System.out.println(midiFile.toPath());
+            MidiFileManager.savePatternToMidi(new Pattern(melodia.get().getMelodia()), midiFile);
+
+            byte[] midiBytes = Files.readAllBytes(midiFile.toPath());
+        return ResponseEntity.ok()
+                .header("Content-Disposition", "attachment; filename=melodia" + id + ".mid")
+                .header("Content-Type", "audio/midi")
+                .body(midiBytes);
+    }
+
+
 }

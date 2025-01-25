@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import { GeracaoPage } from "../../pages/GeracaoPage";
 import { AnalisePage } from "../../pages/AnalisePage";
-import { AvaliacaoPage } from "../../pages/avaliacaopage";
+import { AvaliacaoPage } from "../../pages/AvaliacaoPage";
 
 export function BaseRoutes() {
   return (

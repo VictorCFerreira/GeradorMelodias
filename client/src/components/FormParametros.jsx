@@ -25,7 +25,7 @@ export function FormParametros({ onSubmit }) {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="p-fluid">
+        <form onSubmit={handleSubmit} className="p-fluid bg-solid">
             <div className="p-field m-4">
                 <label htmlFor="instrumento">Instrumento</label>
                 <Dropdown

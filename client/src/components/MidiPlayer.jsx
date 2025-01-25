@@ -34,7 +34,7 @@ const MidiPlayer = ({ midiBytes }) => {
 
 
   return (
-    <div className="midi-player flex flex-column items-center p-4 border rounded shadow">
+    <div className="midi-player flex items-center p-4 border rounded shadow">
       <div className="progress-bar w-full bg-gray-200 h-2 rounded mb-4">
         <div
           className="bg-blue-500 h-full rounded"
