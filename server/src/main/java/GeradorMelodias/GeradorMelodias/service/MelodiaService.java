@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import GeradorMelodias.GeradorMelodias.repository.MelodiaRepository;
 
-import java.sql.Date;
+
 import java.time.LocalDateTime;
 import java.util.Optional;
 

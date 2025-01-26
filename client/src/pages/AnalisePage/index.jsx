@@ -43,7 +43,7 @@ export const AnalisePage = () => {
     labels: ['E_MENOR', 'DÓ', 'LÁ', 'FÁ', 'RE'],
     datasets: [
       {
-        label: 'Parâmetros mais usados com sensação Alegre',
+        label: 'Escalas mais usadas em melodias com sensação ' + selectedSensacao,
         data: [3, 5, 2, 4, 7],
         backgroundColor: '#FFEB3B',
         borderColor: '#FBC02D',
@@ -56,7 +56,7 @@ export const AnalisePage = () => {
     labels: ['Piano', 'Guitarra', 'Violino'],
     datasets: [
       {
-        label: 'Instrumentos mais bem avaliados com sensação Alegre',
+        label: 'Instrumentos mais usados em melodias com sensação ' + selectedSensacao,
         data: [7, 8, 5],
         backgroundColor: '#FF7043',
         borderColor: '#D32F2F',
@@ -69,7 +69,7 @@ export const AnalisePage = () => {
     labels: ['40-50 BPM', '51-60 BPM', '61-70 BPM', '71-80 BPM'],
     datasets: [
       {
-        label: 'Faixa de BPM mais bem avaliada',
+        label: 'Faixa de BPM mais utilizadas em melodias com sensação ' + selectedSensacao,
         data: [9, 6, 7, 8],
         backgroundColor: '#8E24AA',
         borderColor: '#6A1B9A',

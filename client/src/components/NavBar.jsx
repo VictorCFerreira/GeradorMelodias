@@ -1,23 +1,36 @@
 import React from "react";
+import { Menubar } from "primereact/menubar";
 import { Link } from "react-router-dom";
+import { FaMusic, FaSearch } from "react-icons/fa";
 
 export const Navbar = () => {
+  const items = [
+    {
+      label: (
+        <div className="flex items-center ">
+          <FaMusic />
+          <span className="ml-2">Geração</span>
+        </div>
+      ),
+      command: () => window.location.href = "/"
+    },
+    {
+      label: (
+        <div className="flex items-center ">
+          <FaSearch />
+          <span className="ml-2">Análise</span>
+        </div>
+      ),
+      command: () => window.location.href = "/analise"
+    },
+  ];
+
   return (
     <header className="fixed top-0 left-0 w-full bg-blue-600 shadow-lg z-50">
-      <nav className="flex justify-content-center align-items-center h-16 border border-b-4 border-white">
-        <ul className="flex space-x-10 list-none">
-          <li className="m-4">
-            <Link to="/" className="text-white text-lg font-semibold hover:text-blue-300">
-              Geração
-            </Link>
-          </li>
-          <li className="m-4">
-            <Link to="/analise" className="text-white text-lg font-semibold hover:text-blue-300">
-              Análise
-            </Link>
-          </li>
-        </ul>
-      </nav>
+      <Menubar
+        model={items}
+        className="border border-b-4 border-white flex justify-content-center align-items-center text-lg font-semibold"
+      />
     </header>
   );
 };

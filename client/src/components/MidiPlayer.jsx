@@ -27,21 +27,17 @@ const MidiPlayer = ({ midiBase64 }) => {
         clearInterval(intervalRef.current);
       }
 
-      // Stop previous tone transport and clear intervals
       Tone.Transport.stop();
       Tone.Transport.cancel();
       Tone.Transport.seconds = 0;
 
-      // Reset progress bar immediately before starting playback
       setProgress(0);
 
-      // Convert MIDI and create a new Midi instance
       const midiArrayBuffer = base64ToArrayBuffer(midiBase64);
       const midi = new Midi(midiArrayBuffer);
 
       midiDurationRef.current = midi.duration;
 
-      // Initialize synth and setup for MIDI playback
       synth.current = new Tone.PolySynth().toDestination();
       midi.tracks.forEach((track) => {
         track.notes.forEach((note) => {
@@ -54,12 +50,10 @@ const MidiPlayer = ({ midiBase64 }) => {
         });
       });
 
-      // Start Tone.js and begin playing
       await Tone.start();
       Tone.Transport.start();
       setIsPlaying(true);
 
-      // Update progress bar every 100ms
       intervalRef.current = setInterval(() => {
         const elapsedTime = Tone.Transport.seconds;
         const progressValue = (elapsedTime / midiDurationRef.current) * 100;

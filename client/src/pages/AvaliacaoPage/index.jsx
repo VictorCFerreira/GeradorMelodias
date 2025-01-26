@@ -8,11 +8,11 @@ import { API_URL } from "../../constants/constants";
 import axios from "axios";
 import MidiPlayer from "../../components/MidiPlayer";
 
-
 export function AvaliacaoPage() {
   const { melodiaId } = useParams();
   const [longInput, setLongInput] = useState("");
   const [midiBytes, setMidiBytes] = useState("");
+  const [avaliada, setAvaliada] = useState(false);
 
   useEffect(() => {
     const fetchMidi = async () => {
@@ -24,18 +24,14 @@ export function AvaliacaoPage() {
         setMidiBytes(response.data.midiBytes);
       } catch (err) {
         console.error("Erro ao carregar o MIDI:", err);
-        setError("Erro ao carregar o MIDI.");
       }
     };
 
     fetchMidi();
   }, [melodiaId]);
 
-
   const handleEnviarAvaliacao = async (avaliacao) => {
     try {
-      console.log("aa: " + JSON.stringify(avaliacao));
-
       const response = await axios.post(`${API_URL}/avaliacao`,
         JSON.stringify(avaliacao),
         {
@@ -44,6 +40,7 @@ export function AvaliacaoPage() {
       );
 
       if (response.status === 200) {
+        setAvaliada(true); // Atualiza o estado para indicar que a melodia foi avaliada
         console.log("Melodia avaliada com sucesso!");
         alert("Melodia avaliada com sucesso!");
       } else {
@@ -51,7 +48,7 @@ export function AvaliacaoPage() {
         alert("Erro ao avaliar melodia.");
       }
     } catch (error) {
-      console.error("Erro ao avaliar melodia:");
+      console.error("Erro ao avaliar melodia:", error);
       alert("Erro ao avaliar melodia.");
     }
   };
@@ -69,16 +66,14 @@ export function AvaliacaoPage() {
     }
   };
 
-
   return (
     <>
-
-      <div className="border-solid border-blue bg-blue-300 ">
-      <h1>Avaliar Melodia</h1>
+      <div className="border-solid border-blue bg-blue-300">
+        <h1>Avaliar Melodia</h1>
 
         <div>
           <div className="player-container mt-6">
-            <MidiPlayer midiBase64={midiBytes}/>
+            <MidiPlayer midiBase64={midiBytes} />
           </div>
         </div>
         <div className="flex justify-content-center my-4">
@@ -93,10 +88,15 @@ export function AvaliacaoPage() {
             Buscar <FaSearch className="ml-2" />
           </Button>
         </div>
-        <FormAvaliacao onSubmit={handleEnviarAvaliacao} melodiaId={Number(melodiaId)} />
-
+        
+        {!avaliada ? (
+          <FormAvaliacao onSubmit={handleEnviarAvaliacao} melodiaId={Number(melodiaId)} />
+        ) : (
+          <div className="text-green-500 font-bold">
+            Esta melodia já foi avaliada. Obrigado!
+          </div>
+        )}
       </div>
-
     </>
-  )
+  );
 }

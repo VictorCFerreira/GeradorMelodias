@@ -1,12 +1,8 @@
 package GeradorMelodias.GeradorMelodias.controller;
 
-import GeradorMelodias.GeradorMelodias.dto.generic.AvaliacaoDTO;
 import GeradorMelodias.GeradorMelodias.dto.request.CreateAvaliacaoDTO;
 import GeradorMelodias.GeradorMelodias.entity.avaliacao.Avaliacao;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import GeradorMelodias.GeradorMelodias.service.AvaliacaoService;
