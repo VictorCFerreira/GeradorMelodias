@@ -6,11 +6,9 @@ import axios from "axios";
 import MidiPlayer from "../../components/MidiPlayer";
 import { Toast } from 'primereact/toast';
 import { FaMusic } from "react-icons/fa";
-import { Link } from "lucide-react";
 
 export function AvaliacaoPage() {
   const { melodiaId } = useParams();
-  const [longInput, setLongInput] = useState("");
   const [midiBytes, setMidiBytes] = useState("");
   const [avaliada, setAvaliada] = useState(false);
   const toast = useRef(null);
@@ -53,18 +51,6 @@ export function AvaliacaoPage() {
     }
   };
 
-  const handleBuscarPorLong = () => {
-    if (longInput) {
-      axios
-        .get(`${API_URL}/geracao/play/${longInput}`, { method: "GET" })
-        .then((response) => {
-          if (response.ok) {
-            console.log("Busca realizada com sucesso!");
-          }
-        })
-        .catch((error) => console.error("Erro na requisição:", error));
-    }
-  };
 
   return (
     <>
@@ -76,18 +62,6 @@ export function AvaliacaoPage() {
             <MidiPlayer midiBase64={midiBytes} />
           </div>
         </div>
-        {/*<div className="flex justify-content-center my-4">
-          <label htmlFor="longInput">Digite um Long:</label>
-          <InputText
-            id="longInput"
-            value={longInput}
-            onChange={(e) => setLongInput(e.target.value)}
-            className="ml-4"
-          />
-          <Button onClick={handleBuscarPorLong} className="p-button-outlined ml-3">
-            Buscar <FaSearch className="ml-2" />
-          </Button>
-        </div>*/}
 
         {avaliada && (
           <div className=" m-4 ">

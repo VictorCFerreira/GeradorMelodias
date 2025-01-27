@@ -7,7 +7,7 @@ import { FaPause, FaPlay, FaDownload } from "react-icons/fa";
 const MidiPlayer = ({ midiBase64 }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
-  const midiDurationRef = useRef(15); // Duração fixa de 15 segundos
+  const midiDurationRef = useRef(15);
   const intervalRef = useRef(null);
   const synth = useRef(null);
 
