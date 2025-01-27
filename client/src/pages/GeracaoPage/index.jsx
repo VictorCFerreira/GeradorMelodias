@@ -2,7 +2,6 @@ import React, { useRef, useState } from "react";
 import axios from "axios";
 import { API_URL } from "../../constants/constants";
 import { FormParametros } from "../../components/FormParametros";
-import MidiPlayer from "../../components/MidiPlayer";
 import { Toast } from 'primereact/toast';
 import { useNavigate } from "react-router-dom";
 
