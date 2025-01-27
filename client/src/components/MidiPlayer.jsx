@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import * as Tone from "tone";
 import { Midi } from "@tonejs/midi";
-import { ProgressBar } from "primereact/progressbar";
 import { FaPause, FaPlay, FaDownload } from "react-icons/fa";
 
 const MidiPlayer = ({ midiBase64 }) => {
@@ -100,7 +99,6 @@ const MidiPlayer = ({ midiBase64 }) => {
 
   return (
     <div className="p-4 w-full max-w-sm mx-auto bg-blue-300 rounded-lg shadow-md">
-
       <div className="flex items-center mb-6">
         <div className="flex flex-col items-center space-y-4">
           <button
@@ -116,18 +114,19 @@ const MidiPlayer = ({ midiBase64 }) => {
         </div>
 
         <div className="flex-1 mt-4 ml-6">
-          <ProgressBar
-            value={progress}
-            showValue={false}
-            className="h-2 rounded-full bg-blue-100"
-          />
+          <div className="relative w-full h-2 bg-blue-100 rounded-full">
+            <div
+              className="absolute top-0 left-0 h-2 bg-blue-500 rounded-full transition-all duration-200"
+              style={{ width: `${progress}%` }}
+            ></div>
+          </div>
         </div>
       </div>
 
       <div className="mt-4 text-center">
         <button
           onClick={downloadMidi}
-          className="py-2 px-4 bg-green-600 text-white rounded-md hover:bg-green-700"
+          className="py-2 px-4 bg-green-600 text-white rounded-md hover:bg-green-700 flex items-center justify-center"
         >
           Baixar como .mid
           <FaDownload className="text-xl ml-4" />
