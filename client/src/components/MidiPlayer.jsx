@@ -2,12 +2,12 @@ import React, { useState, useEffect, useRef } from "react";
 import * as Tone from "tone";
 import { Midi } from "@tonejs/midi";
 import { ProgressBar } from "primereact/progressbar";
-import { FaPause, FaPlay, FaDownload } from "react-icons/fa"; // Ícones de pause, play e download
+import { FaPause, FaPlay, FaDownload } from "react-icons/fa";
 
 const MidiPlayer = ({ midiBase64 }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
-  const midiDurationRef = useRef(0);
+  const midiDurationRef = useRef(15); // Duração fixa de 15 segundos
   const intervalRef = useRef(null);
   const synth = useRef(null);
 
@@ -33,12 +33,14 @@ const MidiPlayer = ({ midiBase64 }) => {
 
       setProgress(0);
 
+      // Converter o MIDI base64 para ArrayBuffer
       const midiArrayBuffer = base64ToArrayBuffer(midiBase64);
       const midi = new Midi(midiArrayBuffer);
 
-      midiDurationRef.current = midi.duration;
-
+      // Criar o sintetizador
       synth.current = new Tone.PolySynth().toDestination();
+
+      // Iniciar o sintetizador
       midi.tracks.forEach((track) => {
         track.notes.forEach((note) => {
           synth.current.triggerAttackRelease(
@@ -54,6 +56,7 @@ const MidiPlayer = ({ midiBase64 }) => {
       Tone.Transport.start();
       setIsPlaying(true);
 
+      // Atualização do andamento da melodia
       intervalRef.current = setInterval(() => {
         const elapsedTime = Tone.Transport.seconds;
         const progressValue = (elapsedTime / midiDurationRef.current) * 100;
@@ -97,7 +100,6 @@ const MidiPlayer = ({ midiBase64 }) => {
 
   return (
     <div className="p-4 w-full max-w-sm mx-auto bg-blue-300 rounded-lg shadow-md">
-      <h1 className="text-xl font-bold text-center mb-4">MIDI Player</h1>
 
       <div className="flex items-center mb-6">
         <div className="flex flex-col items-center space-y-4">
@@ -115,7 +117,7 @@ const MidiPlayer = ({ midiBase64 }) => {
 
         <div className="flex-1 mt-4 ml-6">
           <ProgressBar
-            value={progress * 2}
+            value={progress}
             showValue={false}
             className="h-2 rounded-full bg-blue-100"
           />
@@ -127,7 +129,8 @@ const MidiPlayer = ({ midiBase64 }) => {
           onClick={downloadMidi}
           className="py-2 px-4 bg-green-600 text-white rounded-md hover:bg-green-700"
         >
-          <FaDownload className="text-xl" />
+          Baixar como .mid
+          <FaDownload className="text-xl ml-4" />
         </button>
       </div>
     </div>

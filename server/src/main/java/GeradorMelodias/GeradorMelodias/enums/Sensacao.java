@@ -1,4 +1,4 @@
-package GeradorMelodias.GeradorMelodias.entity.avaliacao;
+package GeradorMelodias.GeradorMelodias.enums;
 
 import lombok.Getter;
 

@@ -1,4 +1,6 @@
-package GeradorMelodias.GeradorMelodias.utils.GeracaoMelodias;
+package GeradorMelodias.GeradorMelodias.utils;
+
+import GeradorMelodias.GeradorMelodias.enums.Escala;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,11 +1,9 @@
 package GeradorMelodias.GeradorMelodias.dto.request;
 
-
 import GeradorMelodias.GeradorMelodias.enums.Sensacao;
 
-public record CreateAvaliacaoDTO(
-        Integer nota,
+public record RequestAnaliseParametroSensacaoDTO(
         Sensacao sensacao,
-        Long melodiaId
-) {
+        String parametro
+        ) {
 }

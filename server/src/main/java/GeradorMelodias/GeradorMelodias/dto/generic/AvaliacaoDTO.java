@@ -1,7 +1,7 @@
 package GeradorMelodias.GeradorMelodias.dto.generic;
 
 import GeradorMelodias.GeradorMelodias.entity.Melodia;
-import GeradorMelodias.GeradorMelodias.entity.avaliacao.Sensacao;
+import GeradorMelodias.GeradorMelodias.enums.Sensacao;
 
 public record AvaliacaoDTO(
         Long id,

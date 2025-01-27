@@ -1,9 +1,14 @@
 package GeradorMelodias.GeradorMelodias.service;
 
 import GeradorMelodias.GeradorMelodias.dto.generic.ParametrosDTO;
+import GeradorMelodias.GeradorMelodias.dto.request.RequestAnaliseParametroNotaDTO;
+import GeradorMelodias.GeradorMelodias.dto.request.RequestAnaliseParametroSensacaoDTO;
+import GeradorMelodias.GeradorMelodias.dto.response.AnaliseNotaAvaliadaPorParametro;
+import GeradorMelodias.GeradorMelodias.dto.response.AnaliseSensacaoAvaliadaPorParametro;
 import GeradorMelodias.GeradorMelodias.entity.Melodia;
-import GeradorMelodias.GeradorMelodias.utils.GeracaoMelodias.Escala;
-import GeradorMelodias.GeradorMelodias.utils.GeracaoMelodias.GeradorMelodias;
+import GeradorMelodias.GeradorMelodias.enums.Sensacao;
+import GeradorMelodias.GeradorMelodias.enums.Escala;
+import GeradorMelodias.GeradorMelodias.utils.GeradorMelodias;
 import GeradorMelodias.GeradorMelodias.utils.IntervalosUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +16,8 @@ import GeradorMelodias.GeradorMelodias.repository.MelodiaRepository;
 
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -56,4 +63,34 @@ public class MelodiaService {
 
 
     public Optional<Melodia> findById(Long id){return melodiaRepository.findById(id);};
+
+    public List<AnaliseSensacaoAvaliadaPorParametro> getAnaliseSensacaoPorParametro(
+            RequestAnaliseParametroSensacaoDTO dto) {
+
+        List<Object[]> result = melodiaRepository.countByParametroAndSensacao(dto.parametro(), dto.sensacao());
+        List<AnaliseSensacaoAvaliadaPorParametro> response = new ArrayList<>();
+
+        for (Object[] row : result) {
+            String parametroValor = (String) row[0];
+            Sensacao sensacaoRes = (Sensacao) row[1];
+            Long quantidade = (Long) row[2];
+            response.add(new AnaliseSensacaoAvaliadaPorParametro(parametroValor, sensacaoRes, quantidade));
+        }
+        return response;
+    }
+
+    public List<AnaliseNotaAvaliadaPorParametro> getAnaliseSensacaoPorParametro(
+            RequestAnaliseParametroNotaDTO dto) {
+
+        List<Object[]> result = melodiaRepository.countByParametroAndNota(dto.parametro(), dto.notaMinima(), dto.notaMaxima());
+        List<AnaliseNotaAvaliadaPorParametro> response = new ArrayList<>();
+
+        for (Object[] row : result) {
+            String parametroValor = (String) row[0];
+            Integer nota = (Integer) row[1];
+            Long quantidade = (Long) row[2];
+            response.add(new AnaliseNotaAvaliadaPorParametro(parametroValor, dto.notaMinima()+"-"+dto.notaMaxima(), quantidade));
+        }
+        return response;
+    }
 }

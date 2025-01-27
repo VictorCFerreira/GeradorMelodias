@@ -1,4 +1,4 @@
-package GeradorMelodias.GeradorMelodias.utils.GeracaoMelodias;
+package GeradorMelodias.GeradorMelodias.enums;
 
 public enum Escala {
     C(new String[]{"C", "D", "E", "F", "G", "A", "B"}),

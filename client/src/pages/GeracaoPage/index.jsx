@@ -1,13 +1,14 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import axios from "axios";
 import { API_URL } from "../../constants/constants";
 import { FormParametros } from "../../components/FormParametros";
 import MidiPlayer from "../../components/MidiPlayer";
-import { Navbar } from "../../components/NavBar";
+import { Toast } from 'primereact/toast';
 import { useNavigate } from "react-router-dom";
 
 export function GeracaoPage() {
-  const [midiBytes, setMidiBytes] = useState(null);
+  const toast = useRef(null);
+
 
   const navigate = useNavigate();
 
@@ -29,16 +30,15 @@ export function GeracaoPage() {
 
       if (response.status === 200) {
         console.log("Melodia gerada com sucesso!");
-        alert("Melodia gerada com sucesso!");
-        setMidiBytes(response.data);
-        handleGeracaoSuccess(response.data.idMelodia)
+        toast.current.show({ severity: 'success', summary: 'Sucesso!', detail: 'Melodia Gerada com sucesso.', life: 3000 });
+        handleGeracaoSuccess(response.data)
       } else {
         console.error("Erro ao gerar melodia:", response.status);
-        alert("Erro ao gerar melodia. Verifique os parâmetros.");
+        toast.current.show({ severity: 'error', summary: 'Erro!', detail: 'Erro ao Gerar melodia, verifique os parâmetros', life: 3000 });
       }
     } catch (error) {
       console.error("Erro ao gerar melodia:", error);
-      alert("Erro ao gerar melodia. Verifique os parâmetros.");
+      toast.current.show({ severity: 'error', summary: 'Erro!', detail: 'Erro ao Gerar Melodia', life: 3000 });
     }
   };
 
@@ -48,14 +48,9 @@ export function GeracaoPage() {
       <div className="form-container bg-blue-300 bg-solid">
         <FormParametros onSubmit={handleGenerateMelody} />
       </div>
+     <Toast ref={toast} />
 
-      {}
-      {midiBytes && (
-        <div className="player-container mt-6">
-          <h2>Player de Melodia</h2>
-          <MidiPlayer midiBytes={midiBytes} />
-        </div>
-      )}
     </div>
+    
   );
 }

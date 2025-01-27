@@ -58,10 +58,7 @@ export function FormParametros({ onSubmit }) {
                         onValueChange={(e) => setOitavas(e.value)}
                         min={1}
                         max={8}
-                        showButtons
-                        incrementButtonIcon="pi pi-chevron-up "
-                        decrementButtonIcon="pi pi-chevron-down"
-                        placeholder="Oitavas"
+                        placeholder="Oitavas(1-8)"
                         className="p-inputnumber"
                         required
                     />
@@ -74,10 +71,7 @@ export function FormParametros({ onSubmit }) {
                         onValueChange={(e) => setBpm(e.value)}
                         min={40}
                         max={300}
-                        showButtons
-                        incrementButtonIcon="pi pi-chevron-up "
-                        decrementButtonIcon="pi pi-chevron-down"
-                        placeholder="BPM"
+                        placeholder="BPM(40-300)"
                         className="p-inputnumber "
                         required
                     />

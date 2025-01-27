@@ -1,136 +1,162 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card } from 'primereact/card';
 import { Dropdown } from 'primereact/dropdown';
 import { Chart } from 'primereact/chart';
-import { Button } from 'primereact/button';
+import { SENSACOES, API_URL } from '../../constants/constants';
+import axios from 'axios';
+import { CardAnalise } from '../../components/CardAnalise';
 
 export const AnalisePage = () => {
   const [selectedSensacao, setSelectedSensacao] = useState(null);
-  const sensacoes = [
-    { name: 'Alegre', code: 'alegre' },
-    { name: 'Triste', code: 'triste' },
-    { name: 'Relaxante', code: 'relaxante' },
-    { name: 'Energizante', code: 'energizante' },
-  ];
+  const [analiseData, setAnaliseData] = useState({
+    instrumentosData: {},
+    oitavasData: {},
+    escalasData: {},
+    bpmData: {},
+    sensacaoData: {},
+  });
 
-  const parametrosUsadosGeralData = {
-    labels: ['E_MENOR', 'DÓ', 'LÁ', 'FÁ', 'RE'],
-    datasets: [
-      {
-        label: 'Parâmetros mais usados',
-        data: [5, 2, 4, 3, 6],
-        backgroundColor: '#42A5F5',
-        borderColor: '#1E88E5',
-        borderWidth: 1,
-      },
-    ],
-  };
+  const fetchAnaliseData = async (parametro, notaMinima, notaMaxima, sensacao = null) => {
+    try {
+      const params = sensacao
+        ? { parametro, sensacao }
+        : { parametro, notaMinima, notaMaxima };
 
-  const parametrosAvaliadosGeralData = {
-    labels: ['Piano', 'Guitarra', 'Violino'],
-    datasets: [
-      {
-        label: 'Instrumentos mais bem avaliados',
-        data: [8, 5, 9],
-        backgroundColor: '#66BB6A',
-        borderColor: '#388E3C',
-        borderWidth: 1,
-      },
-    ],
-  };
+      const endpoint = sensacao ? 'sensacao-parametro' : 'nota-parametro';
 
-  const parametrosUsadosSensacaoData = {
-    labels: ['E_MENOR', 'DÓ', 'LÁ', 'FÁ', 'RE'],
-    datasets: [
-      {
-        label: 'Escalas mais usadas em melodias com sensação ' + selectedSensacao,
-        data: [3, 5, 2, 4, 7],
-        backgroundColor: '#FFEB3B',
-        borderColor: '#FBC02D',
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  const parametrosAvaliadosSensacaoData = {
-    labels: ['Piano', 'Guitarra', 'Violino'],
-    datasets: [
-      {
-        label: 'Instrumentos mais usados em melodias com sensação ' + selectedSensacao,
-        data: [7, 8, 5],
-        backgroundColor: '#FF7043',
-        borderColor: '#D32F2F',
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  const faixaBpmData = {
-    labels: ['40-50 BPM', '51-60 BPM', '61-70 BPM', '71-80 BPM'],
-    datasets: [
-      {
-        label: 'Faixa de BPM mais utilizadas em melodias com sensação ' + selectedSensacao,
-        data: [9, 6, 7, 8],
-        backgroundColor: '#8E24AA',
-        borderColor: '#6A1B9A',
-        borderWidth: 1,
-      },
-    ],
+      const response = await axios.get(`${API_URL}/analises/${endpoint}`, { params });
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao buscar dados de análise:', error);
+      throw error;
+    }
   };
 
   const handleSensacaoChange = (e) => {
     setSelectedSensacao(e.value);
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const dataInstrumento = await fetchAnaliseData('Instrumento', 7, 10);
+        const dataBPM = await fetchAnaliseData('BPM', 7, 10);
+        const dataOitavas = await fetchAnaliseData('Oitavas', 7, 10);
+        const dataEscala = await fetchAnaliseData('Escala', 7, 10);
+        const dataSensacao = await fetchAnaliseData('Sensacao', 7, 10);
+
+        setAnaliseData({
+          instrumentosData: processDataForChart(dataInstrumento, 'Instrumento'),
+          bpmData: processDataForChart(dataBPM, 'BPM'),
+          oitavasData: processDataForChart(dataOitavas, 'Oitavas'),
+          escalasData: processDataForChart(dataEscala, 'Escalas'),
+          sensacaoData: processDataForChart(dataSensacao, 'Sensacao')
+        });
+      } catch (error) {
+        console.error('Erro ao carregar dados de análise', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (selectedSensacao) {
+      const fetchDataWithSensacao = async () => {
+        try {
+          const dataInstrumento = await fetchAnaliseData('Instrumento', null, null, selectedSensacao);
+          const dataBPM = await fetchAnaliseData('BPM', null, null, selectedSensacao);
+          const dataOitavas = await fetchAnaliseData('Oitavas', null, null, selectedSensacao);
+          const dataEscala = await fetchAnaliseData('Escala', null, null, selectedSensacao);
+
+          setAnaliseData({
+            instrumentosData: processDataForChart(dataInstrumento, 'Instrumento'),
+            bpmData: processDataForChart(dataBPM, 'BPM'),
+            oitavasData: processDataForChart(dataOitavas, 'Oitavas'),
+            escalasData: processDataForChart(dataEscala, 'Escalas'),
+            sensacaoData: {}
+          });
+        } catch (error) {
+          console.error('Erro ao carregar dados de análise com sensação', error);
+        }
+      };
+
+      fetchDataWithSensacao();
+    }
+  }, [selectedSensacao]);
+
+  const processDataForChart = (data, parametro) => {
+    const processed = data.reduce((acc, curr) => {
+      acc[curr.parametro] = (acc[curr.parametro] || 0) + curr.quantidadeMelodiaAval;
+      return acc;
+    }, {});
+
+    const label = (() => {
+      switch (parametro) {
+        case 'BPM':
+          return 'Faixas de BPM (Batidas por Minuto)';
+        case 'Escalas':
+          return 'Escalas Musicais';
+        case 'Instrumento':
+          return 'Instrumentos';
+        case 'Oitavas':
+          return 'Quantidade de Oitavas';
+        case 'Sensacao':
+          return 'Sensação';
+      }
+    })();
+
+    const labels = Object.keys(processed);
+    const values = Object.values(processed);
+
+    return {
+      labels,
+      datasets: [
+        {
+          label: label,
+          data: values,
+          backgroundColor: '#42A5F5',
+        },
+      ],
+    };
+  };
+
   return (
-    <div className="p-4">
-      <div className="flex justify-between mb-4">
-        <div className="w-1/3">
-          <h2 className="text-xl font-semibold">Análise de Melodias</h2>
-        </div>
-        <div className="w-1/3 flex justify-end">
+    <div className="p-8 min-h-screen border-solid bg-blue-300">
+      <div className="mb-8 text-center">
+        <h2 className="text-3xl font-bold text-gray-800">Análise de Melodias</h2>
+        <p className="text-gray-600">Visualize os dados das melodias baseados nos parâmetros e sensações</p>
+      </div>
+
+      <div className="flex justify-center mb-4">
+        <div className="w-full max-w-sm">
           <Dropdown
             value={selectedSensacao}
-            options={sensacoes}
+            options={SENSACOES}
             onChange={handleSensacaoChange}
-            optionLabel="name"
-            placeholder="Filtrar por Sensação"
-            className="w-full sm:w-20rem"
+            placeholder="Selecione uma sensação"
+            className="w-full p-2 border rounded-md shadow-sm"
           />
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Card title="Parâmetros Mais Usados (Geral)">
-          <Chart type="bar" data={parametrosUsadosGeralData} />
-        </Card>
-
-        <Card title="Parâmetros Mais Bem Avaliados (Geral)">
-          <Chart type="bar" data={parametrosAvaliadosGeralData} />
-        </Card>
+      <div className="text-center mb-8">
+        <h2 className="text-xl font-semibold text-gray-700">
+          {selectedSensacao
+            ? `Pesquisando por sensação: ${selectedSensacao}`
+            : 'Pesquisando por quantidade de avaliações altas'}
+        </h2>
       </div>
 
-      {selectedSensacao && (
-        <div className="mt-6">
-          <h3 className="text-lg font-semibold">Análise de Sensação: {selectedSensacao.name}</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-            <Card title={`Parâmetros Mais Usados com sensação ${selectedSensacao.name}`}>
-              <Chart type="bar" data={parametrosUsadosSensacaoData} />
-            </Card>
+      <div className="grid md:grid-cols-2 gap-8 sm:gap-12 mx-auto">
+        {Object.entries(analiseData).map(([key, data]) =>
+          data?.labels?.length && data?.datasets?.length ? (
+            <CardAnalise key={key} info={data} />
+          ) : null
+        )}
+      </div>
 
-            <Card title={`Instrumentos Mais Bem Avaliados com sensação ${selectedSensacao.name}`}>
-              <Chart type="bar" data={parametrosAvaliadosSensacaoData} />
-            </Card>
-          </div>
 
-          <div className="mt-6">
-            <Card title="Faixa de BPM mais bem avaliada">
-              <Chart type="bar" data={faixaBpmData} />
-            </Card>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
-

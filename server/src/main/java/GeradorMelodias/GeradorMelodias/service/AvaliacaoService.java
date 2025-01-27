@@ -2,7 +2,7 @@ package GeradorMelodias.GeradorMelodias.service;
 
 import GeradorMelodias.GeradorMelodias.dto.request.CreateAvaliacaoDTO;
 import GeradorMelodias.GeradorMelodias.entity.Melodia;
-import GeradorMelodias.GeradorMelodias.entity.avaliacao.Avaliacao;
+import GeradorMelodias.GeradorMelodias.entity.Avaliacao;
 import GeradorMelodias.GeradorMelodias.repository.AvaliacaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

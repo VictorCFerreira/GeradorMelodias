@@ -1,6 +1,6 @@
 package GeradorMelodias.GeradorMelodias.utils;
 
-import GeradorMelodias.GeradorMelodias.utils.GeracaoMelodias.Escala;
+import GeradorMelodias.GeradorMelodias.enums.Escala;
 
 public class IntervalosUtils {
     public String calcularIntervalos(String melodiaGerada, Escala escala) {

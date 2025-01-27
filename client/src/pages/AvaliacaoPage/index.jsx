@@ -1,18 +1,19 @@
 import { FormAvaliacao } from "../../components/FormAvaliacao";
 import { useParams } from 'react-router-dom';
-import { useEffect, useState } from "react";
-import { InputText } from "primereact/inputtext";
-import { Button } from "primereact/button";
-import { FaSearch } from "react-icons/fa";
+import { useEffect, useState, useRef } from "react";
 import { API_URL } from "../../constants/constants";
 import axios from "axios";
 import MidiPlayer from "../../components/MidiPlayer";
+import { Toast } from 'primereact/toast';
+import { FaMusic } from "react-icons/fa";
+import { Link } from "lucide-react";
 
 export function AvaliacaoPage() {
   const { melodiaId } = useParams();
   const [longInput, setLongInput] = useState("");
   const [midiBytes, setMidiBytes] = useState("");
   const [avaliada, setAvaliada] = useState(false);
+  const toast = useRef(null);
 
   useEffect(() => {
     const fetchMidi = async () => {
@@ -20,7 +21,7 @@ export function AvaliacaoPage() {
         const response = await axios.get(`${API_URL}/geracao/${melodiaId}`, {
           responseType: 'json',
         });
-        
+
         setMidiBytes(response.data.midiBytes);
       } catch (err) {
         console.error("Erro ao carregar o MIDI:", err);
@@ -40,16 +41,15 @@ export function AvaliacaoPage() {
       );
 
       if (response.status === 200) {
-        setAvaliada(true); // Atualiza o estado para indicar que a melodia foi avaliada
-        console.log("Melodia avaliada com sucesso!");
-        alert("Melodia avaliada com sucesso!");
+        setAvaliada(true);
+        toast.current.show({ severity: 'success', summary: 'Sucesso!', detail: 'Melodia avaliada com sucesso!', life: 3000 });
       } else {
         console.error("Erro ao avaliar melodia:", response.status);
-        alert("Erro ao avaliar melodia.");
+        toast.current.show({ severity: 'error', summary: 'Erro!', detail: 'Erro ao avaliar melodia.', life: 3000 });
       }
     } catch (error) {
       console.error("Erro ao avaliar melodia:", error);
-      alert("Erro ao avaliar melodia.");
+      toast.current.show({ severity: 'error', summary: 'Erro!', detail: 'Erro ao avaliar melodia.', life: 3000 });
     }
   };
 
@@ -76,7 +76,7 @@ export function AvaliacaoPage() {
             <MidiPlayer midiBase64={midiBytes} />
           </div>
         </div>
-        <div className="flex justify-content-center my-4">
+        {/*<div className="flex justify-content-center my-4">
           <label htmlFor="longInput">Digite um Long:</label>
           <InputText
             id="longInput"
@@ -87,16 +87,25 @@ export function AvaliacaoPage() {
           <Button onClick={handleBuscarPorLong} className="p-button-outlined ml-3">
             Buscar <FaSearch className="ml-2" />
           </Button>
-        </div>
-        
+        </div>*/}
+
+        {avaliada && (
+          <div className=" m-4 ">
+            <h3>Esta melodia já foi avaliada. Obrigado!</h3>
+              <div className="">
+              <FaMusic />
+              <a href="/" className="ml-2">Voltar para Geração</a>
+              </div>
+          </div>
+
+        )}
+
         {!avaliada ? (
           <FormAvaliacao onSubmit={handleEnviarAvaliacao} melodiaId={Number(melodiaId)} />
-        ) : (
-          <div className="text-green-500 font-bold">
-            Esta melodia já foi avaliada. Obrigado!
-          </div>
-        )}
+        ) : null}
       </div>
+
+      <Toast ref={toast} />
     </>
   );
 }
