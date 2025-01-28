@@ -83,7 +83,10 @@ button:focus-visible {
 
 }
 
+.custom-midi-player span > div > div > div{
+  background-color: black !important;
 
+}
 
 @media (prefers-color-scheme: light) {
   :root {

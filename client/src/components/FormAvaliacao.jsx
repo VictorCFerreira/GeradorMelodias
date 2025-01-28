@@ -25,18 +25,19 @@ export function FormAvaliacao({ onSubmit, melodiaId }) {
   return (
     <form onSubmit={handleSubmit} className="p-fluid">
       <div className="p-field m-4">
-        <div className="star-rating flex gap-2 items-center">
+        <h3>Avalie a melodia:</h3>
+        <div className="flex gap-2 items-center  ">
           {Array.from({ length: 10 }).map((_, index) => (
             <button
               key={index}
               type="button"
               onClick={() => setNota(index + 1)}
-              className="group"
+              className="group bg-blue-300"
             >
               <Star
                 size={32}
                 className={`${
-                  index < nota ? "text-yellow-500" : "text-gray-400"
+                  index < nota ? " text-yellow-300 " : "text-white"
                 } group-hover:scale-110 transition-transform`}
               />
             </button>
