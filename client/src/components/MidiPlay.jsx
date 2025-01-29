@@ -4,11 +4,11 @@ import { Button } from 'primereact/button';
 import { Message } from 'primereact/message';
 import Soundfont from 'soundfont-player';
 
-// Instrument mapping for General MIDI program numbers
+// Instrument mapping using correct soundfont names
 const INSTRUMENT_MAPPING = {
   0: 'acoustic_grand_piano', // Piano
   16: 'drawbar_organ',      // Órgão
-  25: 'steel_string_guitar', // Violão
+  25: 'acoustic_guitar_steel', // Violão
   27: 'electric_guitar_clean', // Guitarra
   33: 'electric_bass_finger',  // Baixo
   40: 'violin',             // Violino
@@ -21,11 +21,10 @@ const INSTRUMENT_MAPPING = {
   8: 'celesta',            // Celesta
 };
 
-// Display names for instruments
 const INSTRUMENT_NAMES = {
   'acoustic_grand_piano': 'Piano',
   'drawbar_organ': 'Órgão',
-  'steel_string_guitar': 'Violão',
+  'acoustic_guitar_steel': 'Violão',
   'electric_guitar_clean': 'Guitarra',
   'electric_bass_finger': 'Baixo',
   'violin': 'Violino',
@@ -45,6 +44,7 @@ const MidiPlayer = ({ base64MidiData }) => {
   const [instrumentPlayers, setInstrumentPlayers] = useState({});
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [loadingProgress, setLoadingProgress] = useState(0);
 
   useEffect(() => {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -54,13 +54,23 @@ const MidiPlayer = ({ base64MidiData }) => {
 
   const loadInstruments = async (ctx) => {
     setIsLoading(true);
+    setError('');
     try {
       const players = {};
+      const totalInstruments = Object.keys(INSTRUMENT_MAPPING).length;
+      let loadedCount = 0;
+
       for (const [, soundfontName] of Object.entries(INSTRUMENT_MAPPING)) {
-        players[soundfontName] = await Soundfont.instrument(ctx, soundfontName, {
-          format: 'mp3',
-          soundfont: 'MusyngKite'
-        });
+        try {
+          players[soundfontName] = await Soundfont.instrument(ctx, soundfontName, {
+            format: 'mp3',
+            soundfont: 'MusyngKite'
+          });
+          loadedCount++;
+          setLoadingProgress(Math.round((loadedCount / totalInstruments) * 100));
+        } catch (err) {
+          console.error(`Error loading instrument ${soundfontName}:`, err);
+        }
       }
       setInstrumentPlayers(players);
       setIsLoading(false);
@@ -75,7 +85,6 @@ const MidiPlayer = ({ base64MidiData }) => {
     const dv = new DataView(buffer);
     let position = 0;
 
-    // Parse header chunk
     const headerChunk = {
       type: String.fromCharCode(dv.getUint8(0), dv.getUint8(1), dv.getUint8(2), dv.getUint8(3)),
       length: dv.getUint32(4),
@@ -153,28 +162,26 @@ const MidiPlayer = ({ base64MidiData }) => {
       const { headerChunk, trackChunk } = parseMidiData(bytes.buffer);
       
       const ticksPerBeat = headerChunk.division;
-      const secondsPerTick = 0.005; // Assuming 120 BPM
+      const secondsPerTick = 0.011667;
 
       let currentTime = audioContext.currentTime;
       let totalDeltaTime = 0;
-      let currentSoundfontInstrument = 'acoustic_grand_piano'; // Default to piano
+      let currentSoundfontInstrument = 'acoustic_grand_piano';
 
       trackChunk.events.forEach(event => {
         totalDeltaTime += event.deltaTime;
         const eventTime = currentTime + (totalDeltaTime * secondsPerTick);
 
         if (event.type === 0x9 && event.velocity > 0) {
-          // Note On
           const player = instrumentPlayers[currentSoundfontInstrument];
           if (player) {
             player.play(event.note, eventTime, { gain: event.velocity / 127 });
           }
         }
         else if (event.type === 0xC) {
-          // Program Change
           const soundfontName = INSTRUMENT_MAPPING[event.program] || 'acoustic_grand_piano';
           currentSoundfontInstrument = soundfontName;
-          setCurrentInstrument(INSTRUMENT_NAMES[soundfontName] || 'Unknown Instrument');
+          setCurrentInstrument(INSTRUMENT_NAMES[soundfontName] || 'Instrumento Desconhecido');
         }
       });
 
@@ -182,27 +189,15 @@ const MidiPlayer = ({ base64MidiData }) => {
       setTimeout(() => setIsPlaying(false), totalDuration * 1000);
 
     } catch (err) {
-      console.error('Error playing MIDI:', err);
-      setError('Error playing MIDI file');
+      console.error('Erro ao tocar MIDI:', err);
+      setError('Erro ao tocar MIDI');
       setIsPlaying(false);
     }
   };
 
-  const header = (
-    <div className="flex align-items-center justify-content-between">
-      <h2>MIDI Player</h2>
-    </div>
-  );
-
-  const footer = currentInstrument && (
-    <div className="mt-3">
-      <p className="font-bold mb-2">Current Instrument:</p>
-      <p>{currentInstrument}</p>
-    </div>
-  );
 
   return (
-    <Card header={header} footer={footer} className="w-full max-w-30rem">
+    <Card  className="w-full max-w-30rem bg-blue-600">
       {error && (
         <Message 
           severity="error" 
@@ -211,7 +206,12 @@ const MidiPlayer = ({ base64MidiData }) => {
         />
       )}
       <Button
-        label={isLoading ? 'Loading Instruments...' : isPlaying ? 'Playing...' : 'Play MIDI'}
+        label={isLoading 
+          ? `Carregando Instrumentos (${loadingProgress}%)` 
+          : isPlaying 
+            ? 'Tocando' 
+            : 'Tocar Melodia'
+        }
         icon={isLoading ? "pi pi-spinner" : "pi pi-play"}
         onClick={playMidi}
         disabled={isPlaying || isLoading}
