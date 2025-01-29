@@ -3,9 +3,12 @@ import { useParams } from 'react-router-dom';
 import { useEffect, useState, useRef } from "react";
 import { API_URL } from "../../constants/constants";
 import axios from "axios";
-import MidiPlayer from 'react-midi-player';  // Importando o wrapper
+import MidiPlayer from 'react-midi-player';  
+import MidiPlayer2 from '../../components/MidiPlay';  
 import { Toast } from 'primereact/toast';
 import { FaDownload, FaMusic } from "react-icons/fa";
+import MIDISounds from 'midi-sounds-react';
+
 
 
 export function AvaliacaoPage() {
@@ -82,6 +85,8 @@ export function AvaliacaoPage() {
             </button>
           </div>
         </div>
+        <MidiPlayer2 base64MidiData={midiBytes}/>
+
 
         {avaliada && (
           <div className=" m-4 ">
