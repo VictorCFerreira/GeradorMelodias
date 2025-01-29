@@ -4,42 +4,17 @@ import { Button } from 'primereact/button';
 import { Message } from 'primereact/message';
 import Soundfont from 'soundfont-player';
 
-// Instrument mapping using correct soundfont names
-const INSTRUMENT_MAPPING = {
+const INSTRUMENT_ID = {
   0: 'acoustic_grand_piano', // Piano
-  16: 'drawbar_organ',      // Órgão
   25: 'acoustic_guitar_steel', // Violão
   27: 'electric_guitar_clean', // Guitarra
   33: 'electric_bass_finger',  // Baixo
   40: 'violin',             // Violino
-  42: 'cello',             // Violoncelo
-  56: 'trumpet',           // Trompete
-  65: 'alto_sax',          // Saxofone
-  73: 'flute',             // Flauta
-  85: 'lead_1_square',     // Sintetizador
-  68: 'oboe',              // Oboé
-  8: 'celesta',            // Celesta
 };
 
-const INSTRUMENT_NAMES = {
-  'acoustic_grand_piano': 'Piano',
-  'drawbar_organ': 'Órgão',
-  'acoustic_guitar_steel': 'Violão',
-  'electric_guitar_clean': 'Guitarra',
-  'electric_bass_finger': 'Baixo',
-  'violin': 'Violino',
-  'cello': 'Violoncelo',
-  'trumpet': 'Trompete',
-  'alto_sax': 'Saxofone',
-  'flute': 'Flauta',
-  'lead_1_square': 'Sintetizador',
-  'oboe': 'Oboé',
-  'celesta': 'Celesta'
-};
 
 const MidiPlayer = ({ base64MidiData }) => {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [currentInstrument, setCurrentInstrument] = useState('');
   const [audioContext, setAudioContext] = useState(null);
   const [instrumentPlayers, setInstrumentPlayers] = useState({});
   const [error, setError] = useState('');
@@ -57,10 +32,10 @@ const MidiPlayer = ({ base64MidiData }) => {
     setError('');
     try {
       const players = {};
-      const totalInstruments = Object.keys(INSTRUMENT_MAPPING).length;
+      const totalInstruments = Object.keys(INSTRUMENT_ID).length;
       let loadedCount = 0;
 
-      for (const [, soundfontName] of Object.entries(INSTRUMENT_MAPPING)) {
+      for (const [, soundfontName] of Object.entries(INSTRUMENT_ID)) {
         try {
           players[soundfontName] = await Soundfont.instrument(ctx, soundfontName, {
             format: 'mp3',
@@ -162,7 +137,7 @@ const MidiPlayer = ({ base64MidiData }) => {
       const { headerChunk, trackChunk } = parseMidiData(bytes.buffer);
       
       const ticksPerBeat = headerChunk.division;
-      const secondsPerTick = 0.011667;
+      const secondsPerTick = 0.05;
 
       let currentTime = audioContext.currentTime;
       let totalDeltaTime = 0;
@@ -179,9 +154,8 @@ const MidiPlayer = ({ base64MidiData }) => {
           }
         }
         else if (event.type === 0xC) {
-          const soundfontName = INSTRUMENT_MAPPING[event.program] || 'acoustic_grand_piano';
+          const soundfontName = INSTRUMENT_ID[event.program] || 'acoustic_grand_piano';
           currentSoundfontInstrument = soundfontName;
-          setCurrentInstrument(INSTRUMENT_NAMES[soundfontName] || 'Instrumento Desconhecido');
         }
       });
 

@@ -36,7 +36,8 @@ public class GeracaoController {
         byte[] midiBytes = Files.readAllBytes(midiFile.toPath());
         ResponseMelodiaMidiDTO response = new ResponseMelodiaMidiDTO(
                 melodia.get().getId(),
-                midiBytes
+                midiBytes,
+                melodia.get().getBpm()
         );
         return ResponseEntity.ok().body(response);
     }
