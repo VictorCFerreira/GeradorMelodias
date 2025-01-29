@@ -48,7 +48,7 @@ public class MelodiaService {
                 melodia.getInstrumento(),
                 escalaEnum,
                 melodia.getBpm(),
-                3,
+                1,
                 melodia.getOitavas()
         );
 

@@ -29,18 +29,10 @@ export const ESCALAS = [
 
   export const INSTRUMENTOS = [
     { label: "Piano", value: "Piano" },
-    { label: "Órgão", value: "Drawbar_Organ" },//-
     { label: "Violão", value: "STEEL_STRING_GUITAR" },//-
     { label: "Guitarra", value: "ELECTRIC_CLEAN_GUITAR" },//-
     { label: "Baixo", value: "ELECTRIC_BASS_FINGER" },//-
     { label: "Violino", value: "Violin" },
-    { label: "Violoncelo", value: "Cello" },
-    { label: "Trompete", value: "Trumpet" },
-    { label: "Saxofone", value: "Alto_Sax" },//-
-    { label: "Flauta", value: "Flute" },
-    { label: "Sintetizador", value: "SYNTH_VOICE" },//-
-    { label: "Oboé", value: "Oboe" },//-
-    { label: "Celesta", value: "Celesta" },//-
   ];
 
   export const SENSACOES = [

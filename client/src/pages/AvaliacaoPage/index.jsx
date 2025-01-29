@@ -3,14 +3,16 @@ import { useParams } from 'react-router-dom';
 import { useEffect, useState, useRef } from "react";
 import { API_URL } from "../../constants/constants";
 import axios from "axios";
-import MidiPlayer from 'react-midi-player';  // Importando o wrapper
+import MidiPlayer2 from '../../components/MidiPlay';  
 import { Toast } from 'primereact/toast';
 import { FaDownload, FaMusic } from "react-icons/fa";
+
 
 
 export function AvaliacaoPage() {
   const { melodiaId } = useParams();
   const [midiBytes, setMidiBytes] = useState("");
+  const [bpm, setbpm] = useState("");
   const [avaliada, setAvaliada] = useState(false);
   const toast = useRef(null);
 
@@ -66,11 +68,9 @@ export function AvaliacaoPage() {
         <h1>Avaliar Melodia</h1>
 
         <div className="flex flex-column justify-content-center">
-          <div className="player-container mt-6 custom-midi-player">
-            <MidiPlayer
-              data={atob(midiBytes)}
-              className="custom-midi-player"
-            />
+          
+          <div className="player-container mt-6 flex justify-content-center">
+                    <MidiPlayer2 base64MidiData={midiBytes}/>
           </div>
           <div className="mt-4 flex justify-content-center">
             <button
@@ -82,6 +82,7 @@ export function AvaliacaoPage() {
             </button>
           </div>
         </div>
+
 
         {avaliada && (
           <div className=" m-4 ">
