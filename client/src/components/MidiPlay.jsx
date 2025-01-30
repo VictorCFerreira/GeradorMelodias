@@ -1,17 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Card } from 'primereact/card';
 import { Button } from 'primereact/button';
 import { Message } from 'primereact/message';
 import Soundfont from 'soundfont-player';
+import { FaPlay, FaSpinner } from 'react-icons/fa';
+
 
 const INSTRUMENT_ID = {
-  0: 'acoustic_grand_piano', // Piano
-  25: 'acoustic_guitar_steel', // Violão
-  27: 'electric_guitar_clean', // Guitarra
-  33: 'electric_bass_finger',  // Baixo
-  40: 'violin',             // Violino
+  0: 'acoustic_grand_piano',
+  25: 'acoustic_guitar_steel',
+  27: 'electric_guitar_clean',
+  33: 'electric_bass_finger',
+  40: 'violin',
 };
-
 
 const MidiPlayer = ({ base64MidiData }) => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -20,11 +21,20 @@ const MidiPlayer = ({ base64MidiData }) => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [loadingProgress, setLoadingProgress] = useState(0);
+  const [playbackProgress, setPlaybackProgress] = useState(0);
+  const progressInterval = useRef(null);
+  
 
   useEffect(() => {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     setAudioContext(ctx);
     loadInstruments(ctx);
+
+    return () => {
+      if (progressInterval.current) {
+        clearInterval(progressInterval.current);
+      }
+    };
   }, []);
 
   const loadInstruments = async (ctx) => {
@@ -126,6 +136,7 @@ const MidiPlayer = ({ base64MidiData }) => {
     
     setIsPlaying(true);
     setError('');
+    setPlaybackProgress(0);
 
     try {
       const binaryString = atob(base64MidiData);
@@ -137,7 +148,7 @@ const MidiPlayer = ({ base64MidiData }) => {
       const { headerChunk, trackChunk } = parseMidiData(bytes.buffer);
       
       const ticksPerBeat = headerChunk.division;
-      const secondsPerTick = 0.05;
+      const secondsPerTick = 0.005;
 
       let currentTime = audioContext.currentTime;
       let totalDeltaTime = 0;
@@ -160,18 +171,44 @@ const MidiPlayer = ({ base64MidiData }) => {
       });
 
       const totalDuration = (totalDeltaTime * secondsPerTick) + 1;
-      setTimeout(() => setIsPlaying(false), totalDuration * 1000);
+      
+      // Set up progress tracking
+      if (progressInterval.current) {
+        clearInterval(progressInterval.current);
+      }
+      
+      const startTime = Date.now();
+      progressInterval.current = setInterval(() => {
+        const elapsed = (Date.now() - startTime) / 1000;
+        const progress = Math.min((elapsed / totalDuration) * 100, 100);
+        setPlaybackProgress(progress);
+        
+        if (progress >= 100) {
+          clearInterval(progressInterval.current);
+          setIsPlaying(false);
+          setPlaybackProgress(0);
+        }
+      }, 100);
+
+      setTimeout(() => {
+        clearInterval(progressInterval.current);
+        setIsPlaying(false);
+        setPlaybackProgress(0);
+      }, totalDuration * 1000);
 
     } catch (err) {
-      console.error('Erro ao tocar MIDI:', err);
-      setError('Erro ao tocar MIDI');
+      console.error('Error playing MIDI:', err);
+      setError('Error playing MIDI');
       setIsPlaying(false);
+      setPlaybackProgress(0);
+      if (progressInterval.current) {
+        clearInterval(progressInterval.current);
+      }
     }
   };
 
-
   return (
-    <Card  className="w-full max-w-30rem bg-blue-600">
+    <Card className="w-full max-w-4xl bg-blue-300 p-4 ml-8 mr-8 border-solid border-blue-500">
       {error && (
         <Message 
           severity="error" 
@@ -179,18 +216,31 @@ const MidiPlayer = ({ base64MidiData }) => {
           className="mb-3"
         />
       )}
-      <Button
-        label={isLoading 
-          ? `Carregando Instrumentos (${loadingProgress}%)` 
-          : isPlaying 
-            ? 'Tocando' 
-            : 'Tocar Melodia'
-        }
-        icon={isLoading ? "pi pi-spinner" : "pi pi-play"}
-        onClick={playMidi}
-        disabled={isPlaying || isLoading}
-        className="w-full"
-      />
+      <div className="flex items-center gap-4">
+        <button
+          onClick={playMidi}
+          disabled={isPlaying || isLoading}
+          className="flex items-center justify-center  h-10 rounded-full bg-blue-500 hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed text-white"
+        >
+          {isLoading ? (
+            <FaSpinner className="animate-spin" />
+          ) : (
+            <FaPlay className="" />
+          )}
+        </button>
+        
+        <div className="flex-1 h-2">
+          <div className="w-full h-2 bg-blue-200 rounded-full overflow-hidden flex align-items-center">
+            <div 
+              className="bg-blue-700 rounded-full"
+              style={{ 
+                width: `${playbackProgress}%`,
+                height: '8px'
+              }}
+            />
+          </div>
+        </div>
+      </div>
     </Card>
   );
 };
