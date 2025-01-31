@@ -14,7 +14,7 @@ const INSTRUMENT_ID = {
   40: 'violin',
 };
 
-const MidiPlayer = ({ base64MidiData }) => {
+const MidiPlayer = ({ base64MidiData, bpm }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [audioContext, setAudioContext] = useState(null);
   const [instrumentPlayers, setInstrumentPlayers] = useState({});
@@ -148,7 +148,7 @@ const MidiPlayer = ({ base64MidiData }) => {
       const { headerChunk, trackChunk } = parseMidiData(bytes.buffer);
       
       const ticksPerBeat = headerChunk.division;
-      const secondsPerTick = 0.005;
+      const secondsPerTick = (60/bpm) * 0.01;
 
       let currentTime = audioContext.currentTime;
       let totalDeltaTime = 0;
@@ -172,7 +172,6 @@ const MidiPlayer = ({ base64MidiData }) => {
 
       const totalDuration = (totalDeltaTime * secondsPerTick) + 1;
       
-      // Set up progress tracking
       if (progressInterval.current) {
         clearInterval(progressInterval.current);
       }
@@ -208,7 +207,7 @@ const MidiPlayer = ({ base64MidiData }) => {
   };
 
   return (
-    <Card className="w-full max-w-4xl bg-blue-300 p-4 ml-8 mr-8 border-solid border-blue-500">
+    <div className="w-full max-w-4xl bg-blue-300 p-4 ml-8 mr-8 border-solid border-blue-500 ">
       {error && (
         <Message 
           severity="error" 
@@ -216,32 +215,32 @@ const MidiPlayer = ({ base64MidiData }) => {
           className="mb-3"
         />
       )}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 rounded-full ">
         <button
           onClick={playMidi}
           disabled={isPlaying || isLoading}
-          className="flex items-center justify-center  h-10 rounded-full bg-blue-500 hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed text-white"
+          className="flex items-center justify-center h-10  bg-blue-500 hover:bg-blue-600 disabled:opacity-20  text-white"
         >
           {isLoading ? (
-            <FaSpinner className="animate-spin" />
+            <FaSpinner />
           ) : (
-            <FaPlay className="" />
+            <FaPlay  />
           )}
         </button>
         
-        <div className="flex-1 h-2">
-          <div className="w-full h-2 bg-blue-200 rounded-full overflow-hidden flex align-items-center">
+        <div className="flex-1 flex items-center h-4 ">
+          <div className="w-full h-4 bg-blue-200  overflow-hidden relative rounded-full">
             <div 
-              className="bg-blue-700 rounded-full"
+              className="bg-blue-700 rounded-full h-full"
               style={{ 
                 width: `${playbackProgress}%`,
-                height: '8px'
+                height:'16px'
               }}
             />
           </div>
         </div>
       </div>
-    </Card>
+    </div>
   );
 };
 

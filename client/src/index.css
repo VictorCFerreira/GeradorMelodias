@@ -55,37 +55,8 @@ button:focus-visible {
 }
 
 
-.custom-midi-player span {
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: end !important;
-  justify-content: center !important;
-}
-.custom-midi-player span > div {
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  justify-content: center !important;
-  background-color: #85b2f9 !important;
-  padding: 10px !important;
-  border-radius: 5px !important;
-  margin: 5px 0 !important;
-  color: white !important;
-  text-align: center !important;
-  font-size: 16px !important;
-  /* border: 2px solid #0056b3 !important; */
-}
-
-.custom-midi-player span > div > div{
-  background-color: #85b2f9 !important;
-  border-color:  #6366f1 !important;
-  border-radius: 40% !important;
-
-}
-
-.custom-midi-player span > div > div > div{
-  background-color: black !important;
-
+.min-w-55rem{
+  min-width: 55.438rem;
 }
 
 @media (prefers-color-scheme: light) {

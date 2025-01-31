@@ -3,16 +3,17 @@ import { useParams } from 'react-router-dom';
 import { useEffect, useState, useRef } from "react";
 import { API_URL } from "../../constants/constants";
 import axios from "axios";
-import MidiPlayer2 from '../../components/MidiPlay';  
+import MidiPlayer from '../../components/MidiPlay';  
 import { Toast } from 'primereact/toast';
 import { FaDownload, FaMusic } from "react-icons/fa";
+import { Card } from "primereact/card";
 
 
 
 export function AvaliacaoPage() {
   const { melodiaId } = useParams();
   const [midiBytes, setMidiBytes] = useState("");
-  const [bpm, setbpm] = useState("");
+  const [bpm, setBpm] = useState(0);
   const [avaliada, setAvaliada] = useState(false);
   const toast = useRef(null);
 
@@ -30,6 +31,7 @@ export function AvaliacaoPage() {
           responseType: 'json',
         });
         setMidiBytes(response.data.midiBytes);
+        setBpm(response.data.bpm)
       } catch (err) {
         console.error("Erro ao carregar o MIDI:", err);
       }
@@ -64,13 +66,13 @@ export function AvaliacaoPage() {
 
   return (
     <>
-      <div className="border-solid border-blue bg-blue-300">
+      <Card className="border-solid border-blue bg-blue-300 min-w-55rem">
         <h1>Avaliar Melodia</h1>
 
-        <div className="flex flex-column justify-content-center">
+        <div className="flex flex-column justify-content-center min-w-64">
           
-          <div className="player-container mt-6 flex justify-content-center">
-                    <MidiPlayer2 base64MidiData={midiBytes}/>
+          <div className="player-container mt-6 flex justify-content-center min-w-64">
+                    <MidiPlayer base64MidiData={midiBytes} bpm={bpm}/>
           </div>
           <div className="mt-4 flex justify-content-center">
             <button
@@ -97,7 +99,7 @@ export function AvaliacaoPage() {
         {!avaliada ? (
           <FormAvaliacao onSubmit={handleEnviarAvaliacao} melodiaId={Number(melodiaId)} />
         ) : null}
-      </div>
+      </Card>
 
       <Toast ref={toast} />
     </>
