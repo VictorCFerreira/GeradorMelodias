@@ -29,9 +29,9 @@ export const ESCALAS = [
 
   export const INSTRUMENTOS = [
     { label: "Piano", value: "Piano" },
-    { label: "Violão", value: "STEEL_STRING_GUITAR" },//-
-    { label: "Guitarra", value: "ELECTRIC_CLEAN_GUITAR" },//-
-    { label: "Baixo", value: "ELECTRIC_BASS_FINGER" },//-
+    { label: "Violão", value: "STEEL_STRING_GUITAR" },
+    { label: "Guitarra", value: "ELECTRIC_CLEAN_GUITAR" },
+    { label: "Baixo", value: "ELECTRIC_BASS_FINGER" },
     { label: "Violino", value: "Violin" },
   ];
 

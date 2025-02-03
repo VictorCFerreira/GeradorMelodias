@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Card } from 'primereact/card';
 import { Dropdown } from 'primereact/dropdown';
-import { Chart } from 'primereact/chart';
-import { SENSACOES, API_URL } from '../../constants/constants';
+import { SENSACOES, API_URL,INSTRUMENTOS } from '../../constants/constants';
 import axios from 'axios';
 import { CardAnalise } from '../../components/CardAnalise';
 
@@ -46,11 +44,11 @@ export const AnalisePage = () => {
         const dataSensacao = await fetchAnaliseData('Sensacao', 7, 10);
 
         setAnaliseData({
-          instrumentosData: processDataForChart(dataInstrumento, 'Instrumento'),
-          bpmData: processDataForChart(dataBPM, 'BPM'),
-          oitavasData: processDataForChart(dataOitavas, 'Oitavas'),
-          escalasData: processDataForChart(dataEscala, 'Escalas'),
-          sensacaoData: processDataForChart(dataSensacao, 'Sensacao')
+          instrumentosData: processarDadosGrafico(dataInstrumento, 'Instrumento'),
+          bpmData: processarDadosGrafico(dataBPM, 'BPM'),
+          oitavasData: processarDadosGrafico(dataOitavas, 'Oitavas'),
+          escalasData: processarDadosGrafico(dataEscala, 'Escalas'),
+          sensacaoData: processarDadosGrafico(dataSensacao, 'Sensacao')
         });
       } catch (error) {
         console.error('Erro ao carregar dados de análise', error);
@@ -70,10 +68,10 @@ export const AnalisePage = () => {
           const dataEscala = await fetchAnaliseData('Escala', null, null, selectedSensacao);
 
           setAnaliseData({
-            instrumentosData: processDataForChart(dataInstrumento, 'Instrumento'),
-            bpmData: processDataForChart(dataBPM, 'BPM'),
-            oitavasData: processDataForChart(dataOitavas, 'Oitavas'),
-            escalasData: processDataForChart(dataEscala, 'Escalas'),
+            instrumentosData: processarDadosGrafico(dataInstrumento, 'Instrumento'),
+            bpmData: processarDadosGrafico(dataBPM, 'BPM'),
+            oitavasData: processarDadosGrafico(dataOitavas, 'Oitavas'),
+            escalasData: processarDadosGrafico(dataEscala, 'Escalas'),
             sensacaoData: {}
           });
         } catch (error) {
@@ -85,12 +83,24 @@ export const AnalisePage = () => {
     }
   }, [selectedSensacao]);
 
-  const processDataForChart = (data, parametro) => {
-    const processed = data.reduce((acc, curr) => {
-      acc[curr.parametro] = (acc[curr.parametro] || 0) + curr.quantidadeMelodiaAval;
-      return acc;
+  const processarDadosGrafico = (data, parametro) => {
+
+    const instrumentosMap = INSTRUMENTOS.reduce((map, item) => {
+      map[item.value] = item.label;
+      return map;
     }, {});
 
+    const processed = data.reduce((acc, curr) => {
+      let label = curr.parametro;
+  
+      if (parametro === 'Instrumento' && instrumentosMap[label]) {
+        label = instrumentosMap[label];
+      }
+  
+      acc[label] = (acc[label] || 0) + curr.quantidadeMelodiaAval;
+      return acc;
+    }, {});
+  
     const label = (() => {
       switch (parametro) {
         case 'BPM':
@@ -105,10 +115,10 @@ export const AnalisePage = () => {
           return 'Sensação';
       }
     })();
-
+  
     const labels = Object.keys(processed);
     const values = Object.values(processed);
-
+  
     return {
       labels,
       datasets: [
